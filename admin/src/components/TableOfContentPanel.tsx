@@ -2,7 +2,7 @@ import type { PanelComponent } from '@strapi/content-manager/strapi-admin'
 import type { Config } from '../../../server/src/config'
 
 import { unstable_useContentManagerContext as useContentManagerContext, unstable_useDocumentLayout as useDocumentLayout } from '@strapi/strapi/admin'
-import { Button, Typography } from '@strapi/design-system'
+import { Button, Typography, Loader, Flex } from '@strapi/design-system'
 import { getFetchClient } from '@strapi/strapi/admin'
 import { useEffect, useState } from 'react'
 import { PLUGIN_ID } from '../pluginId'
@@ -13,15 +13,15 @@ const TableOfContentPanel: PanelComponent = (props) => {
   const { form } = useContentManagerContext()
   const { edit } = useDocumentLayout(props.model)
 
-  const [_contentType, setContentType] = useState<Config['contentTypes'][number] | undefined>(undefined)
+  const [contentType, setContentType] = useState<Config['contentTypes'][number] | undefined>(undefined)
 
   console.log(props)
   console.log((form as any).values)
   console.log(edit)
 
   useEffect(() => {
-    get<{ version: Config['contentTypes'][number] }>(`/${PLUGIN_ID}/config/${props.model}`).then(({ data }) => {
-      setContentType(data.version)
+    get<Config['contentTypes'][number]>(`/${PLUGIN_ID}/config/${props.model}`).then(({ data }) => {
+      setContentType(data)
     }).catch((error) => {
       // eslint-disable-next-line no-console
       console.error('Failed to fetch contentType:', error)
@@ -38,18 +38,22 @@ const TableOfContentPanel: PanelComponent = (props) => {
 
   return {
     title: 'Table of Content',
-    content: (
+    content: !contentType ? (
+      <Flex justifyContent="center" alignItems="center" direction="column" width="100%">
+        <Loader />
+      </Flex>
+    ) : (
       <ol style={{ width: '100%'}}>
-        { Object.entries((form as any).values).map(([key, value]) => {
+        { (form as any).values[contentType.targetDynamicZoneFieldName].map((dzComponent: any) => {
           return (
-            <li key={key}>
+            <li key={`${dzComponent.__component}:${dzComponent.id}`}>
               { props.activeTab === 'published' ? (
                 <Typography>
-                  {key}: {valueToString(value)}
+                  {valueToString(dzComponent.value)}
                 </Typography>
               ) : (
                 <Button size="S" variant="ghost">
-                  {key}: {valueToString(value)}
+                  {valueToString(dzComponent.value)}
                 </Button>
               )}
             </li>
