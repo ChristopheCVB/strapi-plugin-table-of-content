@@ -10,6 +10,13 @@ const TableOfContentPanel: PanelComponent = (props) => {
   console.log((form as any).values)
   console.log(edit)
 
+  const valueToString = (value: unknown) => {
+    if (typeof value === 'object') {
+      return JSON.stringify(value)
+    }
+    return value?.toString()
+  }
+
   return {
     title: 'Table of Content',
     content: (
@@ -19,11 +26,11 @@ const TableOfContentPanel: PanelComponent = (props) => {
             <li key={key}>
               { props.activeTab === 'published' ? (
                 <Typography>
-                  {key}: {(value as any).toString()}
+                  {key}: {valueToString(value)}
                 </Typography>
               ) : (
                 <Button size="S" variant="ghost">
-                  {key}: {(value as any).toString()}
+                  {key}: {valueToString(value)}
                 </Button>
               )}
             </li>
