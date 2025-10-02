@@ -1,3 +1,4 @@
+import type { Plugin } from '@strapi/strapi'
 import type { StrapiApp } from '@strapi/strapi/admin'
 
 import { TableOfContentPanel } from './components/TableOfContentPanel'
@@ -24,4 +25,4 @@ export default {
       }),
     )
   },
-}
+} satisfies Plugin.Config.AdminInput
