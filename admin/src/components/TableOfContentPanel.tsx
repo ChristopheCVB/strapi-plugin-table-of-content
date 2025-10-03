@@ -55,6 +55,35 @@ const TableOfContentPanel: PanelComponent = (props) => {
     // Open the component in the editor and scroll to it
   }
 
+  const getComponentLevel = (componentName: string, dynamicZone: Config['contentTypes'][number]['dynamicZones'][number]) => {
+    if (!dynamicZone.components) {
+      return 0
+    }
+    const component = dynamicZone.components.find(comp => comp.name === componentName)
+    return component ? component.level : 0
+  }
+
+  const getParentLevel = (currentIndex: number, dynamicZone: Config['contentTypes'][number]['dynamicZones'][number]) => {
+    if (currentIndex === 0) {
+      return 0
+    }
+    
+    const components = (form as any).values[dynamicZone.name]
+    const currentComponentLevel = getComponentLevel(components[currentIndex].__component, dynamicZone)
+    
+    // Find the most recent component with a higher level
+    for (let i = currentIndex - 1; i >= 0; i--) {
+      const componentLevel = getComponentLevel(components[i].__component, dynamicZone)
+      
+      // If we find a component with higher level, use it as parent
+      if (componentLevel > currentComponentLevel) {
+        return componentLevel
+      }
+    }
+    
+    return 0
+  }
+
   if (!isLoading && !contentType) {
     return null
   }
@@ -96,6 +125,9 @@ const TableOfContentPanel: PanelComponent = (props) => {
           >
             {
               (form as any).values[dynamicZone.name].map((dzComponent: DZComponent, dzComponentIndex: number) => {
+                // Get the parent level (most recent component with higher level)
+                const parentLevel = getParentLevel(dzComponentIndex, dynamicZone)
+                
                 return (
                   <li key={`${PLUGIN_ID}_dynamic-zone_${dynamicZone.name}_component_${dzComponent.__component}:${dzComponent.id}`}>
                     <Typography
@@ -104,7 +136,7 @@ const TableOfContentPanel: PanelComponent = (props) => {
                       style={{
                         cursor: props.activeTab !== 'published' ? 'pointer' : 'unset',
                         paddingBlock: 2,
-                        paddingInlineStart: 0 * 2,
+                        paddingInlineStart: parentLevel * 8,
                       }}
                     >
                       {componentToDisplayName(dzComponent)}
