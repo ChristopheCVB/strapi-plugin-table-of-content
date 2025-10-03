@@ -8,7 +8,17 @@ describe('Table of Content Plugin', () => {
         contentTypes: [
           {
             uid: 'api::page.page',
-            targetDynamicZoneFieldName: 'content',
+            dynamicZones: [
+              {
+                name: 'content',
+                components: [
+                  {
+                    name: 'content.summary-title',
+                    level: 1,
+                  },
+                ],
+              },
+            ],
           },
         ],
       }
@@ -21,7 +31,11 @@ describe('Table of Content Plugin', () => {
         contentTypes: [
           {
             uid: '',
-            targetDynamicZoneFieldName: 'content',
+            dynamicZones: [
+              {
+                name: 'content',
+              },
+            ],
           },
         ],
       }
@@ -29,11 +43,24 @@ describe('Table of Content Plugin', () => {
       expect(() => config.validator(invalidConfig)).toThrow()
     })
 
-    it('should reject missing targetDynamicZoneFieldName', () => {
+    it('should reject missing dynamicZones', () => {
       const invalidConfig = {
         contentTypes: [
           {
             uid: 'api::page.page',
+          },
+        ],
+      }
+
+      expect(() => config.validator(invalidConfig)).toThrow()
+    })
+
+    it('should reject empty dynamicZones', () => {
+      const invalidConfig = {
+        contentTypes: [
+          {
+            uid: 'api::page.page',
+            dynamicZones: [],
           },
         ],
       }
@@ -46,11 +73,19 @@ describe('Table of Content Plugin', () => {
         contentTypes: [
           {
             uid: 'api::page.page',
-            targetDynamicZoneFieldName: 'content',
+            dynamicZones: [
+              {
+                name: 'content',
+              },
+            ],
           },
           {
             uid: 'api::page.page',
-            targetDynamicZoneFieldName: 'content2',
+            dynamicZones: [
+              {
+                name: 'content2',
+              },
+            ],
           },
         ],
       }

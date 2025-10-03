@@ -7,12 +7,18 @@ import { getFetchClient } from '@strapi/strapi/admin'
 import { useEffect, useState } from 'react'
 import { PLUGIN_ID } from '../pluginId'
 
+type DZComponent = {
+  __component: string
+  id: string
+} & Record<string, unknown>
+
 const TableOfContentPanel: PanelComponent = (props) => {
   const { get } = getFetchClient()
 
   const { form } = useContentManagerContext()
   const { edit } = useDocumentLayout(props.model)
 
+  const [isLoading, setIsLoading] = useState(true)
   const [contentType, setContentType] = useState<Config['contentTypes'][number] | undefined>(undefined)
 
   console.log(props)
@@ -20,12 +26,15 @@ const TableOfContentPanel: PanelComponent = (props) => {
   console.log(edit)
 
   useEffect(() => {
+    setIsLoading(true)
     get<Config['contentTypes'][number]>(`/${PLUGIN_ID}/config/${props.model}`).then(({ data }) => {
       setContentType(data)
     }).catch((error) => {
       // eslint-disable-next-line no-console
       console.error('Failed to fetch contentType:', error)
       setContentType(undefined)
+    }).finally(() => {
+      setIsLoading(false)
     })
   }, [])
 
@@ -36,31 +45,46 @@ const TableOfContentPanel: PanelComponent = (props) => {
     return value?.toString()
   }
 
+  const handleComponentClick = (dynamicZoneName: Config['contentTypes'][number]['dynamicZones'][number]['name'], componentIndex: number) => {
+    console.log(`clicked on dynamic zone '${dynamicZoneName}' at component index ${componentIndex}`)
+  }
+
+  if (!isLoading && !contentType) {
+    return null
+  }
+
   return {
     title: 'Table of Content',
-    content: !contentType ? (
+    content: isLoading ? (
       <Flex justifyContent="center" alignItems="center" direction="column" width="100%">
         <Loader />
       </Flex>
-    ) : (
-      <ol style={{ width: '100%'}}>
-        { (form as any).values[contentType.targetDynamicZoneFieldName].map((dzComponent: any) => {
-          return (
-            <li key={`${dzComponent.__component}:${dzComponent.id}`}>
-              { props.activeTab === 'published' ? (
-                <Typography>
-                  {valueToString(dzComponent.value)}
-                </Typography>
-              ) : (
-                <Button size="S" variant="ghost">
-                  {valueToString(dzComponent.value)}
-                </Button>
-              )}
-            </li>
-          )
-        }) }
-      </ol>
-    ),
+    ) : contentType ? 
+      contentType.dynamicZones.map((dynamicZone) => 
+        <Flex key={dynamicZone.name} direction="column" gap={1} alignItems="flex-start" width="100%">
+          <Typography key={dynamicZone.name} style={{ textTransform: 'uppercase' }} tag="h3">{dynamicZone.name}</Typography>
+          <ol key={dynamicZone.name}>
+            { (form as any).values[dynamicZone.name].map((dzComponent: DZComponent, dzComponentIndex: number) => {
+              return (
+                <li key={`${dzComponent.__component}:${dzComponent.id}`}>
+                  { props.activeTab === 'published' ? (
+                    <Typography>
+                      {dzComponent.__component} - {valueToString(dzComponent.value)}
+                    </Typography>
+                  ) : (
+                    <Button size="S" variant="ghost" onClick={() => handleComponentClick(dynamicZone.name, dzComponentIndex)}>
+                      {dzComponent.__component} - {valueToString(dzComponent.value)}
+                    </Button>
+                  )}
+                </li>
+              )
+            }) }
+          </ol>
+        </Flex>,
+      )
+      : (
+        <Typography>Error loading table of content</Typography>
+      ),
   }
 }
 

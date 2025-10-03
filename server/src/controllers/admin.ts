@@ -13,7 +13,7 @@ const controller = ({ strapi }: { strapi: Core.Strapi }) => ({
     const contentType = contentTypes.find(contentType => contentType.uid === uid)
 
     if (!contentType) {
-      ctx.throw(404, `Configuration for content type ${uid} not found.`)
+      ctx.throw(404, `[${PLUGIN_ID}] Configuration for content type ${uid} not found.`)
     }
 
     return contentType
