@@ -136,7 +136,7 @@ const TableOfContentPanel: PanelComponent = (props) => {
                       style={{
                         cursor: props.activeTab !== 'published' ? 'pointer' : 'unset',
                         paddingBlock: 2,
-                        paddingInlineStart: parentLevel * 8,
+                        paddingInlineStart: parentLevel * 16,
                       }}
                     >
                       {componentToDisplayName(dzComponent)}
