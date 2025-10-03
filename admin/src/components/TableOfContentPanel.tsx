@@ -2,7 +2,7 @@ import type { PanelComponent } from '@strapi/content-manager/strapi-admin'
 import type { Config } from '../../../server/src/config'
 
 import { unstable_useContentManagerContext as useContentManagerContext, unstable_useDocumentLayout as useDocumentLayout } from '@strapi/strapi/admin'
-import { Button, Typography, Loader, Flex } from '@strapi/design-system'
+import { Typography, Loader, Flex } from '@strapi/design-system'
 import { getFetchClient } from '@strapi/strapi/admin'
 import { useEffect, useState } from 'react'
 import { PLUGIN_ID } from '../pluginId'
@@ -38,15 +38,21 @@ const TableOfContentPanel: PanelComponent = (props) => {
     })
   }, [])
 
-  const valueToString = (value: unknown) => {
-    if (typeof value === 'object') {
-      return JSON.stringify(value)
+  const componentToDisplayName = (component: DZComponent) => {
+    const componentSettings = edit.components[component.__component].settings
+    let displayName = componentSettings.displayName
+
+    if (componentSettings.mainField !== 'documentId' && component[componentSettings.mainField]) {
+      displayName = `${displayName} - ${component[componentSettings.mainField]}`
     }
-    return value?.toString()
+
+    return displayName
   }
 
   const handleComponentClick = (dynamicZoneName: Config['contentTypes'][number]['dynamicZones'][number]['name'], componentIndex: number) => {
     console.log(`clicked on dynamic zone '${dynamicZoneName}' at component index ${componentIndex}`)
+    // TODO: Implement the logic to handle the component click
+    // Open the component in the editor and scroll to it
   }
 
   if (!isLoading && !contentType) {
@@ -56,29 +62,57 @@ const TableOfContentPanel: PanelComponent = (props) => {
   return {
     title: 'Table of Content',
     content: isLoading ? (
-      <Flex justifyContent="center" alignItems="center" direction="column" width="100%">
+      <Flex
+        justifyContent="center"
+        alignItems="center"
+        direction="column"
+        width="100%"
+      >
         <Loader />
       </Flex>
     ) : contentType ? 
       contentType.dynamicZones.map((dynamicZone) => 
-        <Flex key={`toc_dynamic-zone_${dynamicZone.name}-container`} direction="column" gap={1} alignItems="flex-start" width="100%">
-          <Typography key={`toc_dynamic-zone_${dynamicZone.name}-title`} style={{ textTransform: 'uppercase' }} tag="h3">{dynamicZone.name}</Typography>
-          <ol key={`toc_dynamic-zone_${dynamicZone.name}-list`}>
-            { (form as any).values[dynamicZone.name].map((dzComponent: DZComponent, dzComponentIndex: number) => {
-              return (
-                <li key={`toc_${dynamicZone.name}_component_${dzComponent.__component}:${dzComponent.id}`}>
-                  { props.activeTab === 'published' ? (
-                    <Typography>
-                      {dzComponent.__component} - {valueToString(dzComponent.value)}
+        <Flex
+          key={`${PLUGIN_ID}_dynamic-zone_${dynamicZone.name}-container`}
+          direction="column"
+          gap={1}
+          alignItems="flex-start"
+          width="100%"
+        >
+          <Typography
+            key={`${PLUGIN_ID}_dynamic-zone_${dynamicZone.name}-title`}
+            style={{ textTransform: 'uppercase' }}
+            tag="h3"
+          >
+            {dynamicZone.name}
+          </Typography>
+          <ol
+            key={`${PLUGIN_ID}_dynamic-zone_${dynamicZone.name}-list`}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 2,
+            }}
+          >
+            {
+              (form as any).values[dynamicZone.name].map((dzComponent: DZComponent, dzComponentIndex: number) => {
+                return (
+                  <li key={`${PLUGIN_ID}_dynamic-zone_${dynamicZone.name}_component_${dzComponent.__component}:${dzComponent.id}`}>
+                    <Typography
+                      onClick={() => props.activeTab !== 'published' && handleComponentClick(dynamicZone.name, dzComponentIndex)}
+                      fontWeight="semiBold"
+                      style={{
+                        cursor: props.activeTab !== 'published' ? 'pointer' : 'unset',
+                        paddingBlock: 2,
+                        paddingInlineStart: 0 * 2,
+                      }}
+                    >
+                      {componentToDisplayName(dzComponent)}
                     </Typography>
-                  ) : (
-                    <Button size="S" variant="ghost" onClick={() => handleComponentClick(dynamicZone.name, dzComponentIndex)}>
-                      {dzComponent.__component} - {valueToString(dzComponent.value)}
-                    </Button>
-                  )}
-                </li>
-              )
-            }) }
+                  </li>
+                )
+              })
+            }
           </ol>
         </Flex>,
       )
