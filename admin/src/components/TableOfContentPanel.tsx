@@ -61,12 +61,12 @@ const TableOfContentPanel: PanelComponent = (props) => {
       </Flex>
     ) : contentType ? 
       contentType.dynamicZones.map((dynamicZone) => 
-        <Flex key={dynamicZone.name} direction="column" gap={1} alignItems="flex-start" width="100%">
-          <Typography key={dynamicZone.name} style={{ textTransform: 'uppercase' }} tag="h3">{dynamicZone.name}</Typography>
-          <ol key={dynamicZone.name}>
+        <Flex key={`toc_dynamic-zone_${dynamicZone.name}-container`} direction="column" gap={1} alignItems="flex-start" width="100%">
+          <Typography key={`toc_dynamic-zone_${dynamicZone.name}-title`} style={{ textTransform: 'uppercase' }} tag="h3">{dynamicZone.name}</Typography>
+          <ol key={`toc_dynamic-zone_${dynamicZone.name}-list`}>
             { (form as any).values[dynamicZone.name].map((dzComponent: DZComponent, dzComponentIndex: number) => {
               return (
-                <li key={`${dzComponent.__component}:${dzComponent.id}`}>
+                <li key={`toc_${dynamicZone.name}_component_${dzComponent.__component}:${dzComponent.id}`}>
                   { props.activeTab === 'published' ? (
                     <Typography>
                       {dzComponent.__component} - {valueToString(dzComponent.value)}
