@@ -1,8 +1,8 @@
 import type { PanelComponent } from '@strapi/content-manager/strapi-admin'
 import type { Config } from '../../../server/src/config'
 
-import { unstable_useContentManagerContext as useContentManagerContext, unstable_useDocumentLayout as useDocumentLayout } from '@strapi/strapi/admin'
-import { Typography, Loader, Flex } from '@strapi/design-system'
+import { FetchError, unstable_useContentManagerContext as useContentManagerContext, unstable_useDocumentLayout as useDocumentLayout } from '@strapi/strapi/admin'
+import { Typography, Loader, Flex, Button } from '@strapi/design-system'
 import { getFetchClient } from '@strapi/strapi/admin'
 import { useEffect, useState } from 'react'
 import { PLUGIN_ID } from '../pluginId'
@@ -19,24 +19,27 @@ const TableOfContentPanel: PanelComponent = (props) => {
   const { edit } = useDocumentLayout(props.model)
 
   const [isLoading, setIsLoading] = useState(true)
-  const [contentType, setContentType] = useState<Config['contentTypes'][number] | undefined>(undefined)
+  const [retry, setRetry] = useState(0)
+  const [contentType, setContentType] = useState<Config['contentTypes'][number] | undefined | null>(undefined) // undefined means the content type is not found, null means there was an error
 
-  console.log(props)
-  console.log((form as any).values)
-  console.log(edit)
+  console.log('props', props)
+  console.log('form.values', (form as any).values)
+  console.log('edit', edit)
 
   useEffect(() => {
     setIsLoading(true)
     get<Config['contentTypes'][number]>(`/${PLUGIN_ID}/config/${props.model}`).then(({ data }) => {
       setContentType(data)
     }).catch((error) => {
-      // eslint-disable-next-line no-console
-      console.error('Failed to fetch contentType:', error)
-      setContentType(undefined)
+      if (error instanceof FetchError && error.code === 404) {
+        setContentType(undefined)
+      } else {
+        setContentType(null)
+      }
     }).finally(() => {
       setIsLoading(false)
     })
-  }, [])
+  }, [retry])
 
   const componentToDisplayName = (component: DZComponent) => {
     const componentSettings = edit.components[component.__component].settings
@@ -51,6 +54,7 @@ const TableOfContentPanel: PanelComponent = (props) => {
 
   const handleComponentClick = (dynamicZoneName: Config['contentTypes'][number]['dynamicZones'][number]['name'], componentIndex: number) => {
     console.log(`clicked on dynamic zone '${dynamicZoneName}' at component index ${componentIndex}`)
+    alert(`clicked on dynamic zone '${dynamicZoneName}' at component index ${componentIndex}`)
     // TODO: Implement the logic to handle the component click
     // Open the component in the editor and scroll to it
   }
@@ -84,7 +88,7 @@ const TableOfContentPanel: PanelComponent = (props) => {
     return 0
   }
 
-  if (!isLoading && !contentType) {
+  if (!isLoading && contentType === undefined) {
     return null
   }
 
@@ -149,7 +153,14 @@ const TableOfContentPanel: PanelComponent = (props) => {
         </Flex>,
       )
       : (
-        <Typography>Error loading table of content</Typography>
+        <Flex
+          direction="column"
+          alignItems="stretch"
+          gap={1}
+        >
+          <Typography>Error loading table of content</Typography>
+          <Button onClick={() => setRetry(retry + 1)} variant='tertiary'>Retry</Button>
+        </Flex>
       ),
   }
 }
