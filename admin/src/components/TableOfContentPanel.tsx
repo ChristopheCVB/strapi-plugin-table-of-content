@@ -106,53 +106,56 @@ const TableOfContentPanel: PanelComponent = (props) => {
         <Loader />
       </Flex>
     ) : contentType ? 
-      contentType.dynamicZones.map((dynamicZone) => 
-        <Flex
-          key={`${PLUGIN_ID}_dynamic-zone_${dynamicZone.name}-container`}
-          direction="column"
-          gap={1}
-          alignItems="flex-start"
-          width="100%"
-        >
-          <Typography
-            key={`${PLUGIN_ID}_dynamic-zone_${dynamicZone.name}-title`}
-            style={{ textTransform: 'uppercase' }}
-            tag="h3"
+      contentType.dynamicZones.map((dynamicZone) => {
+        return !formValues[dynamicZone.name] || formValues[dynamicZone.name].length === 0 ? null : (
+          <Flex
+            key={`${PLUGIN_ID}_dynamic-zone_${dynamicZone.name}-container`}
+            direction="column"
+            gap={1}
+            alignItems="flex-start"
+            width="100%"
           >
-            {dynamicZone.name}
-          </Typography>
-          <ol
-            key={`${PLUGIN_ID}_dynamic-zone_${dynamicZone.name}-list`}
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 2,
-            }}
-          >
-            {
-              formValues[dynamicZone.name].map((dzComponent: DZComponent, dzComponentIndex: number) => {
+            <Typography
+              key={`${PLUGIN_ID}_dynamic-zone_${dynamicZone.name}-title`}
+              style={{ textTransform: 'uppercase' }}
+              tag="h3"
+            >
+              {dynamicZone.name}
+            </Typography>
+            <ol
+              key={`${PLUGIN_ID}_dynamic-zone_${dynamicZone.name}-list`}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 2,
+              }}
+            >
+              {
+                formValues[dynamicZone.name].map((dzComponent: DZComponent, dzComponentIndex: number) => {
                 // Get the parent level (most recent component with higher level)
-                const parentLevel = getParentLevel(dzComponentIndex, dynamicZone)
+                  const parentLevel = getParentLevel(dzComponentIndex, dynamicZone)
                 
-                return (
-                  <li key={`${PLUGIN_ID}_dynamic-zone_${dynamicZone.name}_component_${dzComponent.__component}[${dzComponent.id}]`}>
-                    <Typography
-                      onClick={() => props.activeTab !== 'published' && handleComponentClick(dynamicZone.name, dzComponentIndex)}
-                      fontWeight="semiBold"
-                      style={{
-                        cursor: props.activeTab !== 'published' ? 'pointer' : 'unset',
-                        paddingBlock: 2,
-                        paddingInlineStart: parentLevel * 16,
-                      }}
-                    >
-                      {componentToDisplayName(dzComponent)}
-                    </Typography>
-                  </li>
-                )
-              })
-            }
-          </ol>
-        </Flex>,
+                  return (
+                    <li key={`${PLUGIN_ID}_dynamic-zone_${dynamicZone.name}_component_${dzComponent.__component}[${dzComponent.id}]`}>
+                      <Typography
+                        onClick={() => props.activeTab !== 'published' && handleComponentClick(dynamicZone.name, dzComponentIndex)}
+                        fontWeight="semiBold"
+                        style={{
+                          cursor: props.activeTab !== 'published' ? 'pointer' : 'unset',
+                          paddingBlock: 2,
+                          paddingInlineStart: parentLevel * 16,
+                        }}
+                      >
+                        {componentToDisplayName(dzComponent)}
+                      </Typography>
+                    </li>
+                  )
+                })
+              }
+            </ol>
+          </Flex>
+        )
+      },
       )
       : (
         <Flex
