@@ -9,7 +9,7 @@ import { PLUGIN_ID } from '../pluginId'
 
 type DZComponent = {
   __component: string
-  id: string
+  id: number
 } & Record<string, unknown>
 
 const TableOfContentPanel: PanelComponent = (props) => {
@@ -17,13 +17,15 @@ const TableOfContentPanel: PanelComponent = (props) => {
 
   const { form } = useContentManagerContext()
   const { edit } = useDocumentLayout(props.model)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { values: formValues } = form as any
 
   const [isLoading, setIsLoading] = useState(true)
   const [retry, setRetry] = useState(0)
   const [contentType, setContentType] = useState<Config['contentTypes'][number] | undefined | null>(undefined) // undefined means the content type is not found, null means there was an error
 
   console.log('props', props)
-  console.log('form.values', (form as any).values)
+  console.log('form.values', formValues)
   console.log('edit', edit)
 
   useEffect(() => {
@@ -72,7 +74,7 @@ const TableOfContentPanel: PanelComponent = (props) => {
       return 0
     }
     
-    const components = (form as any).values[dynamicZone.name]
+    const components = formValues[dynamicZone.name]
     const currentComponentLevel = getComponentLevel(components[currentIndex].__component, dynamicZone)
     
     // Find the most recent component with a higher level
@@ -128,12 +130,12 @@ const TableOfContentPanel: PanelComponent = (props) => {
             }}
           >
             {
-              (form as any).values[dynamicZone.name].map((dzComponent: DZComponent, dzComponentIndex: number) => {
+              formValues[dynamicZone.name].map((dzComponent: DZComponent, dzComponentIndex: number) => {
                 // Get the parent level (most recent component with higher level)
                 const parentLevel = getParentLevel(dzComponentIndex, dynamicZone)
                 
                 return (
-                  <li key={`${PLUGIN_ID}_dynamic-zone_${dynamicZone.name}_component_${dzComponent.__component}:${dzComponent.id}`}>
+                  <li key={`${PLUGIN_ID}_dynamic-zone_${dynamicZone.name}_component_${dzComponent.__component}[${dzComponent.id}]`}>
                     <Typography
                       onClick={() => props.activeTab !== 'published' && handleComponentClick(dynamicZone.name, dzComponentIndex)}
                       fontWeight="semiBold"
