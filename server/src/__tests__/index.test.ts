@@ -10,10 +10,6 @@ describe('Table of Content Plugin', () => {
             uid: 'api::page.page',
             fields: [
               {
-                name: 'title',
-                type: 'primitive',
-              },
-              {
                 name: 'content',
                 type: 'dynamiczone',
               },
