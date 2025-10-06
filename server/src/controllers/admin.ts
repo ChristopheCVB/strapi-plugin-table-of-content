@@ -5,7 +5,7 @@ import type { Config } from '../config'
 import { PLUGIN_ID } from '../pluginId'
 
 const controller = ({ strapi }: { strapi: Core.Strapi }) => ({
-  config(ctx: Context): Config['contentTypes'][number] {
+  configByUID(ctx: Context): Config['contentTypes'][number] {
     const { uid } = ctx.params
     
     // Get config and find right content-type with uid

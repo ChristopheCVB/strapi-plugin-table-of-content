@@ -5,7 +5,7 @@ export default {
       {
         method: 'GET',
         path: '/config/:uid',
-        handler: 'admin.config',
+        handler: 'admin.configByUID',
         config: {
           policies: ['admin::isAuthenticatedAdmin'],
         },
