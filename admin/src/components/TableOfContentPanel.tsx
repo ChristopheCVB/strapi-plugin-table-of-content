@@ -1,32 +1,22 @@
 import type { PanelComponent } from '@strapi/content-manager/strapi-admin'
 import type { Config } from '../../../server/src/config'
 
-import { FetchError, unstable_useContentManagerContext as useContentManagerContext, unstable_useDocumentLayout as useDocumentLayout } from '@strapi/strapi/admin'
-import { Typography, Loader, Flex, Button } from '@strapi/design-system'
-import { getFetchClient } from '@strapi/strapi/admin'
 import { useEffect, useState } from 'react'
-import { PLUGIN_ID } from '../pluginId'
+import { FetchError, getFetchClient } from '@strapi/strapi/admin'
+import { Typography, Loader, Flex, Button } from '@strapi/design-system'
 
-type DZComponent = {
-  __component: string
-  id: number
-} & Record<string, unknown>
+import { PLUGIN_ID } from '../pluginId'
+import { DynamicZoneSection } from './DynamicZoneSection'
 
 const TableOfContentPanel: PanelComponent = (props) => {
   const { get } = getFetchClient()
-
-  const { form } = useContentManagerContext()
-  const { edit } = useDocumentLayout(props.model)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { values: formValues } = form as any
 
   const [isLoading, setIsLoading] = useState(true)
   const [retry, setRetry] = useState(0)
   const [contentType, setContentType] = useState<Config['contentTypes'][number] | undefined | null>(undefined) // undefined means the content type is not found, null means there was an error
 
-  console.log('props', props)
-  console.log('form.values', formValues)
-  console.log('edit', edit)
+  // console.log('props', props)
+  // console.log('form.values', formValues)
 
   useEffect(() => {
     setIsLoading(true)
@@ -42,53 +32,6 @@ const TableOfContentPanel: PanelComponent = (props) => {
       setIsLoading(false)
     })
   }, [retry])
-
-  const componentToDisplayName = (component: DZComponent) => {
-    const componentSettings = edit.components[component.__component].settings
-    let displayName = componentSettings.displayName
-
-    if (componentSettings.mainField !== 'documentId' && component[componentSettings.mainField]) {
-      displayName = `${displayName} - ${component[componentSettings.mainField]}`
-    }
-
-    return displayName
-  }
-
-  const handleComponentClick = (fieldName: Config['contentTypes'][number]['fields'][number]['name'], componentIndex: number) => {
-    console.log(`clicked on field '${fieldName}' at component index ${componentIndex}`)
-    alert(`clicked on dynamic zone '${fieldName}' at component index ${componentIndex}`)
-    // TODO: Implement the logic to handle the component click
-    // Open the component in the editor and scroll to it
-  }
-
-  const getComponentLevel = (componentName: string, field: Config['contentTypes'][number]['fields'][number]) => {
-    if (field.type !== 'dynamiczone' || !field.components) {
-      return 0
-    }
-    const component = field.components.find(comp => comp.name === componentName)
-    return component ? component.level : 0
-  }
-
-  const getParentLevel = (currentIndex: number, field: Config['contentTypes'][number]['fields'][number]) => {
-    if (field.type !== 'dynamiczone' || currentIndex === 0) {
-      return 0
-    }
-    
-    const components = formValues[field.name]
-    const currentComponentLevel = getComponentLevel(components[currentIndex].__component, field)
-    
-    // Find the most recent component with a higher level
-    for (let i = currentIndex - 1; i >= 0; i--) {
-      const componentLevel = getComponentLevel(components[i].__component, field)
-      
-      // If we find a component with higher level, use it as parent
-      if (componentLevel > currentComponentLevel) {
-        return componentLevel
-      }
-    }
-    
-    return 0
-  }
 
   if (!isLoading && contentType === undefined) {
     return null
@@ -109,57 +52,18 @@ const TableOfContentPanel: PanelComponent = (props) => {
       contentType.fields.map((field) => {
         switch (field.type) {
         case 'dynamiczone':
-          return !formValues[field.name] || formValues[field.name].length === 0 ? null : (
-            <Flex
-              key={`${PLUGIN_ID}_field_${field.name}-container`}
-              direction="column"
-              gap={1}
-              alignItems="flex-start"
-              width="100%"
-            >
-              <Typography
-                key={`${PLUGIN_ID}_field_${field.name}-title`}
-                style={{ textTransform: 'uppercase' }}
-                tag="h3"
-              >
-                {field.name}
-              </Typography>
-              <ol
-                key={`${PLUGIN_ID}_field_${field.name}-list`}
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 2,
-                }}
-              >
-                {
-                  formValues[field.name].map((dzComponent: DZComponent, dzComponentIndex: number) => {
-                    // Get the parent level (most recent component with higher level)
-                    const parentLevel = getParentLevel(dzComponentIndex, field)
-                    
-                    return (
-                      <li key={`${PLUGIN_ID}_field_${field.name}_component_${dzComponent.__component}[${dzComponent.id}]`}>
-                        <Typography
-                          onClick={() => props.activeTab !== 'published' && handleComponentClick(field.name, dzComponentIndex)}
-                          fontWeight="semiBold"
-                          style={{
-                            cursor: props.activeTab !== 'published' ? 'pointer' : 'unset',
-                            paddingBlock: 2,
-                            paddingInlineStart: parentLevel * 16,
-                          }}
-                        >
-                          {componentToDisplayName(dzComponent)}
-                        </Typography>
-                      </li>
-                    )
-                  })
-                }
-              </ol>
-            </Flex>
+          return (
+            <DynamicZoneSection
+              key={`${PLUGIN_ID}_field_${field.name}`}
+              field={field}
+              activeTab={props.activeTab}
+              model={props.model}
+            />
           )
+        default:
+          return null
         }
-      },
-      )
+      })
       : (
         <Flex
           direction="column"
