@@ -3,24 +3,58 @@ import { z } from 'zod'
 const configSchema = z.object({
   contentTypes: z.array(z.object({
     uid: z.string().min(1),
-    dynamicZones: z.array(z.object({
-      name: z.string().min(1),
-      components: z.array(z.object({
-        name: z.string().min(1),
-        level: z.number().min(0),
-      })).refine((components) => {
-        const names = components.map((component) => component.name)
-        return new Set(names).size === names.length
-      }, {
-        message: 'Duplicate component names are not allowed.',
-      }).optional(),
-    })).refine((dynamicZones) => {
-      const names = dynamicZones.map((dynamicZone) => dynamicZone.name)
-      return new Set(names).size === names.length
+    // dynamicZones: z.array(z.object({
+    //   name: z.string().min(1),
+    //   components: z.array(z.object({
+    //     name: z.string().min(1),
+    //     level: z.number().min(0),
+    //   })).refine((components) => {
+    //     const names = components.map((component) => component.name)
+    //     return new Set(names).size === names.length
+    //   }, {
+    //     message: 'Duplicate component names are not allowed.',
+    //   }).optional(),
+    // })).refine((dynamicZones) => {
+    //   const names = dynamicZones.map((dynamicZone) => dynamicZone.name)
+    //   return new Set(names).size === names.length
+    // }, {
+    //   message: 'Duplicate dynamic zone names are not allowed.',
+    // }).min(1),
+    fields: z.array(
+      z.union([
+        // TODO: Allow primitive fields to be configured
+        // z.object({
+        //   name: z.string().min(1),
+        //   type: z.literal('primitive'),
+        // }),
+        // TODO: Allow relation fields to be configured
+        // z.object({
+        //   name: z.string().min(1),
+        //   type: z.literal('relation'),
+        //   relationField: z.string().min(1),
+        // }),
+        z.object({
+          name: z.string().min(1),
+          type: z.literal('dynamiczone'),
+          components: z.array(
+            z.object({
+              name: z.string().min(1),
+              level: z.number().min(0),
+            }),
+          ).refine((components) => {
+            const componentNames = components.map((component) => component.name)
+            return new Set(componentNames).size === componentNames.length
+          }, {
+            message: 'Duplicate component names are not allowed.',
+          }).optional(),
+        }),
+      ]),
+    ).refine((fields) => {
+      const fieldNames = fields.map((field) => field.name)
+      return new Set(fieldNames).size === fieldNames.length
     }, {
-      message: 'Duplicate dynamic zone names are not allowed.',
+      message: 'Duplicate field names are not allowed.',
     }).min(1),
-    
   })).refine((contentTypes) => {
     const uids = contentTypes.map((contentType) => contentType.uid)
     return new Set(uids).size === uids.length

@@ -54,32 +54,32 @@ const TableOfContentPanel: PanelComponent = (props) => {
     return displayName
   }
 
-  const handleComponentClick = (dynamicZoneName: Config['contentTypes'][number]['dynamicZones'][number]['name'], componentIndex: number) => {
-    console.log(`clicked on dynamic zone '${dynamicZoneName}' at component index ${componentIndex}`)
-    alert(`clicked on dynamic zone '${dynamicZoneName}' at component index ${componentIndex}`)
+  const handleComponentClick = (fieldName: Config['contentTypes'][number]['fields'][number]['name'], componentIndex: number) => {
+    console.log(`clicked on field '${fieldName}' at component index ${componentIndex}`)
+    alert(`clicked on dynamic zone '${fieldName}' at component index ${componentIndex}`)
     // TODO: Implement the logic to handle the component click
     // Open the component in the editor and scroll to it
   }
 
-  const getComponentLevel = (componentName: string, dynamicZone: Config['contentTypes'][number]['dynamicZones'][number]) => {
-    if (!dynamicZone.components) {
+  const getComponentLevel = (componentName: string, field: Config['contentTypes'][number]['fields'][number]) => {
+    if (field.type !== 'dynamiczone' || !field.components) {
       return 0
     }
-    const component = dynamicZone.components.find(comp => comp.name === componentName)
+    const component = field.components.find(comp => comp.name === componentName)
     return component ? component.level : 0
   }
 
-  const getParentLevel = (currentIndex: number, dynamicZone: Config['contentTypes'][number]['dynamicZones'][number]) => {
-    if (currentIndex === 0) {
+  const getParentLevel = (currentIndex: number, field: Config['contentTypes'][number]['fields'][number]) => {
+    if (field.type !== 'dynamiczone' || currentIndex === 0) {
       return 0
     }
     
-    const components = formValues[dynamicZone.name]
-    const currentComponentLevel = getComponentLevel(components[currentIndex].__component, dynamicZone)
+    const components = formValues[field.name]
+    const currentComponentLevel = getComponentLevel(components[currentIndex].__component, field)
     
     // Find the most recent component with a higher level
     for (let i = currentIndex - 1; i >= 0; i--) {
-      const componentLevel = getComponentLevel(components[i].__component, dynamicZone)
+      const componentLevel = getComponentLevel(components[i].__component, field)
       
       // If we find a component with higher level, use it as parent
       if (componentLevel > currentComponentLevel) {
@@ -106,55 +106,58 @@ const TableOfContentPanel: PanelComponent = (props) => {
         <Loader />
       </Flex>
     ) : contentType ? 
-      contentType.dynamicZones.map((dynamicZone) => {
-        return !formValues[dynamicZone.name] || formValues[dynamicZone.name].length === 0 ? null : (
-          <Flex
-            key={`${PLUGIN_ID}_dynamic-zone_${dynamicZone.name}-container`}
-            direction="column"
-            gap={1}
-            alignItems="flex-start"
-            width="100%"
-          >
-            <Typography
-              key={`${PLUGIN_ID}_dynamic-zone_${dynamicZone.name}-title`}
-              style={{ textTransform: 'uppercase' }}
-              tag="h3"
+      contentType.fields.map((field) => {
+        switch (field.type) {
+        case 'dynamiczone':
+          return !formValues[field.name] || formValues[field.name].length === 0 ? null : (
+            <Flex
+              key={`${PLUGIN_ID}_field_${field.name}-container`}
+              direction="column"
+              gap={1}
+              alignItems="flex-start"
+              width="100%"
             >
-              {dynamicZone.name}
-            </Typography>
-            <ol
-              key={`${PLUGIN_ID}_dynamic-zone_${dynamicZone.name}-list`}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 2,
-              }}
-            >
-              {
-                formValues[dynamicZone.name].map((dzComponent: DZComponent, dzComponentIndex: number) => {
-                // Get the parent level (most recent component with higher level)
-                  const parentLevel = getParentLevel(dzComponentIndex, dynamicZone)
-                
-                  return (
-                    <li key={`${PLUGIN_ID}_dynamic-zone_${dynamicZone.name}_component_${dzComponent.__component}[${dzComponent.id}]`}>
-                      <Typography
-                        onClick={() => props.activeTab !== 'published' && handleComponentClick(dynamicZone.name, dzComponentIndex)}
-                        fontWeight="semiBold"
-                        style={{
-                          cursor: props.activeTab !== 'published' ? 'pointer' : 'unset',
-                          paddingBlock: 2,
-                          paddingInlineStart: parentLevel * 16,
-                        }}
-                      >
-                        {componentToDisplayName(dzComponent)}
-                      </Typography>
-                    </li>
-                  )
-                })
-              }
-            </ol>
-          </Flex>
-        )
+              <Typography
+                key={`${PLUGIN_ID}_field_${field.name}-title`}
+                style={{ textTransform: 'uppercase' }}
+                tag="h3"
+              >
+                {field.name}
+              </Typography>
+              <ol
+                key={`${PLUGIN_ID}_field_${field.name}-list`}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 2,
+                }}
+              >
+                {
+                  formValues[field.name].map((dzComponent: DZComponent, dzComponentIndex: number) => {
+                    // Get the parent level (most recent component with higher level)
+                    const parentLevel = getParentLevel(dzComponentIndex, field)
+                    
+                    return (
+                      <li key={`${PLUGIN_ID}_field_${field.name}_component_${dzComponent.__component}[${dzComponent.id}]`}>
+                        <Typography
+                          onClick={() => props.activeTab !== 'published' && handleComponentClick(field.name, dzComponentIndex)}
+                          fontWeight="semiBold"
+                          style={{
+                            cursor: props.activeTab !== 'published' ? 'pointer' : 'unset',
+                            paddingBlock: 2,
+                            paddingInlineStart: parentLevel * 16,
+                          }}
+                        >
+                          {componentToDisplayName(dzComponent)}
+                        </Typography>
+                      </li>
+                    )
+                  })
+                }
+              </ol>
+            </Flex>
+          )
+        }
       },
       )
       : (

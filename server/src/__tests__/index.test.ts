@@ -8,15 +8,14 @@ describe('Table of Content Plugin', () => {
         contentTypes: [
           {
             uid: 'api::page.page',
-            dynamicZones: [
+            fields: [
+              {
+                name: 'title',
+                type: 'primitive',
+              },
               {
                 name: 'content',
-                components: [
-                  {
-                    name: 'content.summary-title',
-                    level: 1,
-                  },
-                ],
+                type: 'dynamiczone',
               },
             ],
           },
@@ -31,11 +30,7 @@ describe('Table of Content Plugin', () => {
         contentTypes: [
           {
             uid: '',
-            dynamicZones: [
-              {
-                name: 'content',
-              },
-            ],
+            fields: [],
           },
         ],
       }
@@ -43,7 +38,7 @@ describe('Table of Content Plugin', () => {
       expect(() => config.validator(invalidConfig)).toThrow()
     })
 
-    it('should reject missing dynamicZones', () => {
+    it('should reject missing fields', () => {
       const invalidConfig = {
         contentTypes: [
           {
@@ -55,12 +50,12 @@ describe('Table of Content Plugin', () => {
       expect(() => config.validator(invalidConfig)).toThrow()
     })
 
-    it('should reject empty dynamicZones', () => {
+    it('should reject empty fields', () => {
       const invalidConfig = {
         contentTypes: [
           {
             uid: 'api::page.page',
-            dynamicZones: [],
+            fields: [],
           },
         ],
       }
@@ -73,17 +68,41 @@ describe('Table of Content Plugin', () => {
         contentTypes: [
           {
             uid: 'api::page.page',
-            dynamicZones: [
+            fields: [
               {
                 name: 'content',
+                type: 'dynamiczone',
               },
             ],
           },
           {
             uid: 'api::page.page',
-            dynamicZones: [
+            fields: [
               {
-                name: 'content2',
+                name: 'content',
+                type: 'dynamiczone',
+              },
+            ],
+          },
+        ],
+      }
+
+      expect(() => config.validator(invalidConfig)).toThrow()
+    })
+
+    it('should reject duplicate field names', () => {
+      const invalidConfig = {
+        contentTypes: [
+          {
+            uid: 'api::page.page',
+            fields: [
+              {
+                name: 'content',
+                type: 'dynamiczone',
+              },
+              {
+                name: 'content',
+                type: 'dynamiczone',
               },
             ],
           },
