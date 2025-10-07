@@ -39,7 +39,12 @@ const configSchema = z.object({
           components: z.array(
             z.object({
               name: z.string().min(1),
-              level: z.number().min(0),
+              level: z.union([
+                z.number().min(0),
+                z.object({
+                  field: z.string().min(1),
+                }),
+              ]),
             }),
           ).refine((components) => {
             const componentNames = components.map((component) => component.name)

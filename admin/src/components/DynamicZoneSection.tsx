@@ -43,12 +43,21 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
     return displayName
   }
 
-  const getComponentLevel = (componentName: string, field: Config['contentTypes'][number]['fields'][number]) => {
+  const getComponentLevel = (component: DZComponent, field: Config['contentTypes'][number]['fields'][number]) => {
     if (field.type !== 'dynamiczone' || !field.components) {
       return 0
     }
-    const component = field.components.find(comp => comp.name === componentName)
-    return component ? component.level : 0
+
+    const componentConfig = field.components.find(comp => comp.name === component.__component)
+    if (!componentConfig) {
+      return 0
+    }
+
+    if (typeof componentConfig.level === 'number') {
+      return componentConfig.level
+    }
+
+    return parseInt(component[componentConfig.level.field] as string) || 0
   }
 
   const getParentLevel = (currentIndex: number, field: Config['contentTypes'][number]['fields'][number]) => {
@@ -57,11 +66,11 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
     }
     
     const components = formValues[field.name] as DZComponent[]
-    const currentComponentLevel = getComponentLevel(components[currentIndex].__component, field)
+    const currentComponentLevel = getComponentLevel(components[currentIndex], field)
     
     // Find the most recent component with a higher level
     for (let i = currentIndex - 1; i >= 0; i--) {
-      const componentLevel = getComponentLevel(components[i].__component, field)
+      const componentLevel = getComponentLevel(components[i], field)
       
       // If we find a component with higher level, use it as parent
       if (componentLevel > currentComponentLevel) {

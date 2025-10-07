@@ -12,6 +12,18 @@ describe('Table of Content Plugin', () => {
               {
                 name: 'content',
                 type: 'dynamiczone',
+                components: [
+                  {
+                    name: 'content.title',
+                    level: {
+                      field: 'level',
+                    },
+                  },
+                  {
+                    name: 'content.rich-text',
+                    level: 0,
+                  },
+                ],
               },
             ],
           },
