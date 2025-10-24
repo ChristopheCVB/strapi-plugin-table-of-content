@@ -1,6 +1,7 @@
 import type { EditViewContext, PanelComponentProps } from '@strapi/content-manager/strapi-admin'
 import type { Config } from '../../../server/src/config'
 
+import { useEffect, useState } from 'react'
 import { unstable_useContentManagerContext as useContentManagerContext, unstable_useDocumentLayout as useDocumentLayout } from '@strapi/strapi/admin'
 import { Typography, Flex } from '@strapi/design-system'
 
@@ -31,7 +32,28 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
     return null
   }
 
-  const components = formValues[field.name] as DZComponent[]
+  const [componentsWithLevel, setComponentsWithLevel] = useState<{ component: DZComponent, level: number }[]>([])
+
+  useEffect(() => {
+    const localComponentsWithLevel: { component: DZComponent, level: number }[] = []
+    let currentLevel = 0
+    let nextLevel = 0
+    for (const component of formValues[field.name] as DZComponent[]) {
+      const componentLevel = getComponentConfigLevel(component, field)
+      if (componentLevel > currentLevel) {
+        nextLevel = currentLevel + 1
+      } else if (componentLevel < currentLevel && componentLevel !== 0) {
+        currentLevel = componentLevel === 1 ? 0 : currentLevel - componentLevel
+        nextLevel = currentLevel + 1
+      } else if (componentLevel > 0 && componentLevel === currentLevel) {
+        currentLevel = currentLevel - 1
+        nextLevel = currentLevel + 1
+      }
+      localComponentsWithLevel.push({ component, level: currentLevel })
+      currentLevel = nextLevel
+    }
+    setComponentsWithLevel(localComponentsWithLevel)
+  }, [formValues, field])
 
   const componentToDisplayName = (component: DZComponent) => {
     const componentSettings = edit.components[component.__component].settings
@@ -44,7 +66,7 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
     return displayName
   }
 
-  const getComponentLevel = (component: DZComponent, field: Config['contentTypes'][number]['fields'][number]) => {
+  const getComponentConfigLevel = (component: DZComponent, field: Config['contentTypes'][number]['fields'][number]) => {
     if (field.type !== 'dynamiczone' || !field.components) {
       return 0
     }
@@ -59,27 +81,6 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
     }
 
     return parseInt(component[componentConfig.level.field] as string) || 0
-  }
-
-  const getParentLevel = (currentIndex: number, field: Config['contentTypes'][number]['fields'][number]) => {
-    if (field.type !== 'dynamiczone' || currentIndex === 0) {
-      return 0
-    }
-    
-    const components = formValues[field.name] as DZComponent[]
-    const currentComponentLevel = getComponentLevel(components[currentIndex], field)
-    
-    // Find the most recent component with a higher level
-    for (let i = currentIndex - 1; i >= 0; i--) {
-      const componentLevel = getComponentLevel(components[i], field)
-      
-      // If we find a component with higher level, use it as parent
-      if (componentLevel > currentComponentLevel) {
-        return componentLevel
-      }
-    }
-    
-    return 0
   }
 
   const getEditLayoutItemLabel = (fieldName: string) => {
@@ -137,22 +138,21 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
           gap: 2,
         }}
       >
-        {components.map((dzComponent: DZComponent, dzComponentIndex: number) => {
-          // Get the parent level (most recent component with higher level)
-          const parentLevel = getParentLevel(dzComponentIndex, field)
-          
+        {componentsWithLevel.map((componentWithLevel: { component: DZComponent, level: number }, componentWithLevelIndex: number) => {
           return (
-            <li key={`${PLUGIN_ID}_field_${field.name}_component_${dzComponent.__component}[${dzComponent.id}]`}>
+            <li
+              key={`${PLUGIN_ID}_field_${field.name}_component_${componentWithLevel.component.__component}[${componentWithLevel.component.id}]`}
+            >
               <Typography
-                onClick={() => activeTab !== 'published' && handleComponentClick(field.name, dzComponentIndex)}
+                onClick={() => activeTab !== 'published' && handleComponentClick(field.name, componentWithLevelIndex)}
                 fontWeight="semiBold"
                 style={{
                   cursor: activeTab !== 'published' ? 'pointer' : 'unset',
                   paddingBlock: 2,
-                  paddingInlineStart: parentLevel * 16,
+                  paddingInlineStart: componentWithLevel.level * 16,
                 }}
               >
-                {componentToDisplayName(dzComponent)}
+                {componentToDisplayName(componentWithLevel.component)}
               </Typography>
             </li>
           )
