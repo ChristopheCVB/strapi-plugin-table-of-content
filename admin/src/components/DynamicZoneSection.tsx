@@ -4,6 +4,7 @@ import type { Config } from '../../../server/src/config'
 import { useEffect, useState } from 'react'
 import { unstable_useContentManagerContext as useContentManagerContext, unstable_useDocumentLayout as useDocumentLayout } from '@strapi/strapi/admin'
 import { Typography, Flex } from '@strapi/design-system'
+import * as Icons from '@strapi/icons'
 
 import { PLUGIN_ID } from '../pluginId'
 import { getEditLayoutItemLabel } from '../utils'
@@ -70,6 +71,26 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
     }
 
     return displayName
+  }
+
+  const componentToIcon = (component: DZComponent) => {
+    const componentSettings = edit.components[component.__component].settings
+    const displayIcon = field.components?.find(comp => comp.name === component.__component)?.displayIcon || true
+
+    if (!displayIcon) {
+      return null
+    }
+
+    const iconName = componentSettings.icon
+    if (!iconName) {
+      return null
+    }
+
+    const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
+
+    const iconKey = capitalize(iconName) as keyof typeof Icons
+    return Icons[iconKey]
+    
   }
 
   const getComponentConfigLevel = (component: DZComponent, field: Config['contentTypes'][number]['fields'][number]) => {
@@ -142,17 +163,25 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
         }}
       >
         {componentsWithLevel.map((componentWithLevel, componentWithLevelIndex) => {
+          const Icon = componentToIcon(componentWithLevel.component)
           return (
             <li
               key={`${PLUGIN_ID}_field_${field.name}_component_${componentWithLevel.component.__component}[${componentWithLevel.component.id}]`}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 4,
+                paddingInlineStart: componentWithLevel.level * 16,
+                cursor: activeTab !== 'published' ? 'pointer' : 'unset',
+              }}
+              onClick={() => activeTab !== 'published' && handleComponentClick(field.name, componentWithLevelIndex)}
             >
+              {Icon && <Icon />}
               <Typography
-                onClick={() => activeTab !== 'published' && handleComponentClick(field.name, componentWithLevelIndex)}
+                
                 fontWeight="semiBold"
                 style={{
-                  cursor: activeTab !== 'published' ? 'pointer' : 'unset',
                   paddingBlock: 2,
-                  marginInlineStart: componentWithLevel.level * 16,
                 }}
               >
                 {componentToDisplayName(componentWithLevel.component)}

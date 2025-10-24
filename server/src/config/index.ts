@@ -32,6 +32,7 @@ const configSchema = z.object({
                   field: z.string().min(1),
                 }),
               ]),
+              displayIcon: z.boolean().optional(),
             }),
           ).refine((components) => {
             const componentNames = components.map((component) => component.name)
