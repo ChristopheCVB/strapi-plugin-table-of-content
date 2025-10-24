@@ -82,10 +82,28 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
   }
 
   const handleComponentClick = (fieldName: string, componentIndex: number) => {
-    // console.log(`clicked on field '${fieldName}' at component index ${componentIndex}`)
-    alert(`clicked on dynamic zone '${fieldName}' at component index ${componentIndex}`)
-    // TODO: Implement the logic to handle the component click
-    // Open the component in the editor and scroll to it
+    // Select all dynamic zone headers (⚠️ uses :has selector)
+    const dynamiczoneHeaders = document.querySelectorAll('div:has(+ span + span + ol)')
+
+    for (const dynamiczoneHeader of dynamiczoneHeaders) {
+      // Get the dynamic zone header title
+      const dynamiczoneHeaderTitle = dynamiczoneHeader.querySelector('span:first-child')?.textContent.trim()
+
+      // If the dynamic zone header title matches the field name
+      if (fieldName === dynamiczoneHeaderTitle) {
+        // ⚠️ Full selector: `ol > li:nth-child(${componentIndex + 1}) > div:nth-child(2) > div > div > h3 > button` that we simplify to be hopefully more future-proof
+        // Get the button element for the component
+        const buttonElement = dynamiczoneHeader.parentElement!.querySelector<HTMLButtonElement>(`ol > li:nth-child(${componentIndex + 1}) h3 > button`)
+        if (buttonElement) {
+          if (buttonElement.getAttribute('data-state') === 'closed') { // If the component is closed, open it
+            buttonElement.click()
+          }
+          buttonElement.scrollIntoView({ behavior: 'smooth', block: 'start' }) // Scroll to the component
+        }
+
+        break
+      }
+    }
   }
 
   return (
