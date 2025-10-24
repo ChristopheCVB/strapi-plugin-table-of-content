@@ -6,11 +6,17 @@ import { unstable_useContentManagerContext as useContentManagerContext, unstable
 import { Typography, Flex } from '@strapi/design-system'
 
 import { PLUGIN_ID } from '../pluginId'
+import { getEditLayoutItemLabel } from '../utils'
 
 type DZComponent = {
   __component: string
   id: number
 } & Record<string, unknown>
+
+interface DZComponentWithLevel {
+  component: DZComponent
+  level: number
+}
 
 type DynamicZoneSectionProps = Pick<EditViewContext, 'activeTab'> & Pick<PanelComponentProps, 'model'> & {
   field: Config['contentTypes'][number]['fields'][number]
@@ -32,10 +38,10 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
     return null
   }
 
-  const [componentsWithLevel, setComponentsWithLevel] = useState<{ component: DZComponent, level: number }[]>([])
+  const [componentsWithLevel, setComponentsWithLevel] = useState<DZComponentWithLevel[]>([])
 
   useEffect(() => {
-    const localComponentsWithLevel: { component: DZComponent, level: number }[] = []
+    const localComponentsWithLevel: DZComponentWithLevel[] = []
     let currentLevel = 0
     let nextLevel = 0
     for (const component of formValues[field.name] as DZComponent[]) {
@@ -83,11 +89,6 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
     return parseInt(component[componentConfig.level.field] as string) || 0
   }
 
-  const getEditLayoutItemLabel = (fieldName: string) => {
-    // flat(2) is used to flatten the layout array to 2 levels deep (array of rows, each row is an array of items)
-    return edit.layout.flat(2).find((item) => item.name === fieldName)?.label
-  }
-
   const handleComponentClick = (fieldName: string, componentIndex: number) => {
     // Select all dynamic zone headers (⚠️ uses :has selector)
     const dynamiczoneHeaders = document.querySelectorAll('div:has(+ span + span + ol)')
@@ -99,7 +100,7 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
       const dynamiczoneHeaderTitle = dynamiczoneHeader.querySelector('span:first-child')?.textContent.trim()
 
       // If the dynamic zone header title matches the field name
-      if (getEditLayoutItemLabel(fieldName) === dynamiczoneHeaderTitle) {
+      if (getEditLayoutItemLabel(edit, fieldName) === dynamiczoneHeaderTitle) {
         // ⚠️ Full selector: `ol > li:nth-child(${componentIndex + 1}) > div:nth-child(2) > div > div > h3 > button` that we simplify to be hopefully more future-proof
         // Get the button element for the component
         const buttonElement = dynamiczoneHeader.parentElement!.querySelector<HTMLButtonElement>(`ol > li:nth-child(${componentIndex + 1}) h3 > button`)
@@ -123,13 +124,15 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
       alignItems="flex-start"
       width="100%"
     >
-      <Typography
-        key={`${PLUGIN_ID}_field_${field.name}-title`}
-        style={{ textTransform: 'uppercase' }}
-        tag="h3"
-      >
-        {getEditLayoutItemLabel(field.name)}
-      </Typography>
+      {field.displayLabel && (
+        <Typography
+          key={`${PLUGIN_ID}_field_${field.name}-title`}
+          style={{ textTransform: 'uppercase' }}
+          tag="h3"
+        >
+          {getEditLayoutItemLabel(edit, field.name)}
+        </Typography>
+      )}
       <ol
         key={`${PLUGIN_ID}_field_${field.name}-list`}
         style={{
@@ -138,7 +141,7 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
           gap: 2,
         }}
       >
-        {componentsWithLevel.map((componentWithLevel: { component: DZComponent, level: number }, componentWithLevelIndex: number) => {
+        {componentsWithLevel.map((componentWithLevel, componentWithLevelIndex) => {
           return (
             <li
               key={`${PLUGIN_ID}_field_${field.name}_component_${componentWithLevel.component.__component}[${componentWithLevel.component.id}]`}
@@ -149,7 +152,7 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
                 style={{
                   cursor: activeTab !== 'published' ? 'pointer' : 'unset',
                   paddingBlock: 2,
-                  paddingInlineStart: componentWithLevel.level * 16,
+                  marginInlineStart: componentWithLevel.level * 16,
                 }}
               >
                 {componentToDisplayName(componentWithLevel.component)}

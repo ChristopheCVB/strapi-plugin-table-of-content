@@ -50,17 +50,21 @@ const TableOfContentPanel: PanelComponent = (props) => {
         <Loader />
       </Flex>
     ) : contentType ? 
-      contentType.fields.map((field) => {
+      contentType.fields.map((field, fieldIndex) => {
         switch (field.type) {
         case 'separator':
           return (
-            <hr style={{ width: '100%', color: 'rgba(0, 0, 0, 0.5)', backgroundColor: 'rgba(0, 0, 0, 0.5)', borderColor: 'rgba(0, 0, 0, 0.5)' }} />
+            <hr
+              key={`${PLUGIN_ID}_separator_${fieldIndex}`}
+              style={{ width: '100%', color: 'rgba(0, 0, 0, 0.5)', backgroundColor: 'rgba(0, 0, 0, 0.5)', borderColor: 'rgba(0, 0, 0, 0.5)' }}
+            />
           )
         case 'primitive':
           return (
             <PrimitiveSection
               key={`${PLUGIN_ID}_field_${field.name}`}
               field={field}
+              model={props.model}
             />
           )
         case 'dynamiczone':

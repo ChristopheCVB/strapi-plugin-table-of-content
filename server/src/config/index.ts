@@ -9,8 +9,9 @@ const configSchema = z.object({
           type: z.literal('separator'),
         }),
         z.object({
-          name: z.string().min(1),
           type: z.literal('primitive'),
+          name: z.string().min(1),
+          displayLabel: z.boolean().optional(),
         }),
         // TODO: Allow relation fields to be configured
         // z.object({
@@ -21,6 +22,7 @@ const configSchema = z.object({
         z.object({
           type: z.literal('dynamiczone'),
           name: z.string().min(1),
+          displayLabel: z.boolean().optional(),
           components: z.array(
             z.object({
               name: z.string().min(1),
