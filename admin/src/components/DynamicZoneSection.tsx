@@ -178,7 +178,6 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
             >
               {Icon && <Icon />}
               <Typography
-                
                 fontWeight="semiBold"
                 style={{
                   paddingBlock: 2,
