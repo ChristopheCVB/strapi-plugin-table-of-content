@@ -8,11 +8,10 @@ const configSchema = z.object({
         z.object({
           type: z.literal('separator'),
         }),
-        // TODO: Allow primitive fields to be configured
-        // z.object({
-        //   name: z.string().min(1),
-        //   type: z.literal('primitive'),
-        // }),
+        z.object({
+          name: z.string().min(1),
+          type: z.literal('primitive'),
+        }),
         // TODO: Allow relation fields to be configured
         // z.object({
         //   name: z.string().min(1),

@@ -7,6 +7,7 @@ import { Typography, Loader, Flex, Button } from '@strapi/design-system'
 
 import { PLUGIN_ID } from '../pluginId'
 import { DynamicZoneSection } from './DynamicZoneSection'
+import { PrimitiveSection } from './PrimitiveSection'
 
 const TableOfContentPanel: PanelComponent = (props) => {
   const { get } = getFetchClient()
@@ -17,17 +18,20 @@ const TableOfContentPanel: PanelComponent = (props) => {
 
   useEffect(() => {
     setIsLoading(true)
-    get<Config['contentTypes'][number]>(`/${PLUGIN_ID}/config/${props.model}`).then(({ data }) => {
-      setContentType(data)
-    }).catch((error) => {
-      if (error instanceof FetchError && error.code === 404) {
-        setContentType(undefined)
-      } else {
-        setContentType(null)
-      }
-    }).finally(() => {
-      setIsLoading(false)
-    })
+    get<Config['contentTypes'][number]>(`/${PLUGIN_ID}/config/${props.model}`)
+      .then(({ data }) => {
+        setContentType(data)
+      })
+      .catch((error) => {
+        if (error instanceof FetchError && error.code === 404) {
+          setContentType(undefined)
+        } else {
+          setContentType(null)
+        }
+      })
+      .finally(() => {
+        setIsLoading(false)
+      })
   }, [retry])
 
   if (!isLoading && contentType === undefined) {
@@ -50,7 +54,14 @@ const TableOfContentPanel: PanelComponent = (props) => {
         switch (field.type) {
         case 'separator':
           return (
-            <hr style={{ width: '100%', color: '#32324d', backgroundColor: '#32324d', borderColor: '#32324d' }} />
+            <hr style={{ width: '100%', color: 'rgba(0, 0, 0, 0.5)', backgroundColor: 'rgba(0, 0, 0, 0.5)', borderColor: 'rgba(0, 0, 0, 0.5)' }} />
+          )
+        case 'primitive':
+          return (
+            <PrimitiveSection
+              key={`${PLUGIN_ID}_field_${field.name}`}
+              field={field}
+            />
           )
         case 'dynamiczone':
           return (
