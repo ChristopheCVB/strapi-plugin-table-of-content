@@ -5,6 +5,9 @@ const configSchema = z.object({
     uid: z.string().min(1),
     fields: z.array(
       z.union([
+        z.object({
+          type: z.literal('separator'),
+        }),
         // TODO: Allow primitive fields to be configured
         // z.object({
         //   name: z.string().min(1),
@@ -17,8 +20,8 @@ const configSchema = z.object({
         //   relationField: z.string().min(1),
         // }),
         z.object({
-          name: z.string().min(1),
           type: z.literal('dynamiczone'),
+          name: z.string().min(1),
           components: z.array(
             z.object({
               name: z.string().min(1),
@@ -38,7 +41,9 @@ const configSchema = z.object({
         }),
       ]),
     ).refine((fields) => {
-      const fieldNames = fields.map((field) => field.name)
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      const fieldNames = fields.filter((field) => field.type !== 'separator').map((field) => field.name)
       return new Set(fieldNames).size === fieldNames.length
     }, {
       message: 'Duplicate field names are not allowed.',

@@ -51,6 +51,10 @@ const TableOfContentPanel: PanelComponent = (props) => {
     ) : contentType ? 
       contentType.fields.map((field) => {
         switch (field.type) {
+        case 'separator':
+          return (
+            <hr style={{ width: '100%', color: '#32324d', backgroundColor: '#32324d', borderColor: '#32324d' }} />
+          )
         case 'dynamiczone':
           return (
             <DynamicZoneSection

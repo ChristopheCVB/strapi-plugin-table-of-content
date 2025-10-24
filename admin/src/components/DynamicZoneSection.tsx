@@ -87,6 +87,8 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
 
     for (const dynamiczoneHeader of dynamiczoneHeaders) {
       // Get the dynamic zone header title
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       const dynamiczoneHeaderTitle = dynamiczoneHeader.querySelector('span:first-child')?.textContent.trim()
 
       // If the dynamic zone header title matches the field name
