@@ -15,9 +15,6 @@ const TableOfContentPanel: PanelComponent = (props) => {
   const [retry, setRetry] = useState(0)
   const [contentType, setContentType] = useState<Config['contentTypes'][number] | undefined | null>(undefined) // undefined means the content type is not found, null means there was an error
 
-  // console.log('props', props)
-  // console.log('form.values', formValues)
-
   useEffect(() => {
     setIsLoading(true)
     get<Config['contentTypes'][number]>(`/${PLUGIN_ID}/config/${props.model}`).then(({ data }) => {

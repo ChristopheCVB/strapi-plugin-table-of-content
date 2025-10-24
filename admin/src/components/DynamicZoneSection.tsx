@@ -22,6 +22,7 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
 }) => {
   const { edit } = useDocumentLayout(model)
   const { form } = useContentManagerContext()
+  
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { values: formValues } = form as any
 
@@ -81,6 +82,11 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
     return 0
   }
 
+  const getEditLayoutItemLabel = (fieldName: string) => {
+    // flat(2) is used to flatten the layout array to 2 levels deep (array of rows, each row is an array of items)
+    return edit.layout.flat(2).find((item) => item.name === fieldName)?.label
+  }
+
   const handleComponentClick = (fieldName: string, componentIndex: number) => {
     // Select all dynamic zone headers (⚠️ uses :has selector)
     const dynamiczoneHeaders = document.querySelectorAll('div:has(+ span + span + ol)')
@@ -92,7 +98,7 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
       const dynamiczoneHeaderTitle = dynamiczoneHeader.querySelector('span:first-child')?.textContent.trim()
 
       // If the dynamic zone header title matches the field name
-      if (fieldName === dynamiczoneHeaderTitle) {
+      if (getEditLayoutItemLabel(fieldName) === dynamiczoneHeaderTitle) {
         // ⚠️ Full selector: `ol > li:nth-child(${componentIndex + 1}) > div:nth-child(2) > div > div > h3 > button` that we simplify to be hopefully more future-proof
         // Get the button element for the component
         const buttonElement = dynamiczoneHeader.parentElement!.querySelector<HTMLButtonElement>(`ol > li:nth-child(${componentIndex + 1}) h3 > button`)
@@ -121,7 +127,7 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
         style={{ textTransform: 'uppercase' }}
         tag="h3"
       >
-        {field.name}
+        {getEditLayoutItemLabel(field.name)}
       </Typography>
       <ol
         key={`${PLUGIN_ID}_field_${field.name}-list`}
