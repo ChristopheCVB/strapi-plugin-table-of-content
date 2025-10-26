@@ -27,12 +27,31 @@ const PrimitiveSection: React.FC<PrimitiveSectionProps> = ({
   }
 
   const handlePrimitiveClick = (fieldName: string) => {
-    const input = document.querySelector<HTMLInputElement>(`div > label + div > input[name="${fieldName}"]`)
-    if (input) {
-      input.focus()
-      // Scroll to the parent that contains the label and the input
-      input.parentElement!.parentElement!.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    // Try to find the target element by name attribute
+    let targetElement = document.querySelector<HTMLElement>(`div > label + div [name="${fieldName}"]`)
+    // If not found, try to find label + div by name attribute (for select, textarea, etc.)
+    if (!targetElement) {
+      targetElement = document.querySelector<HTMLElement>(`div > label + div[name="${fieldName}"]`)
     }
+
+    if (!targetElement) {
+      return
+    }
+
+    targetElement.focus()
+
+    // Scroll to the parent that contains the label and the target element
+    let parent = targetElement.parentElement
+    while (parent) {
+      if (parent.tagName === 'DIV' && parent.querySelector('label + div')) {
+        break
+      }
+      parent = parent.parentElement
+    }
+    if (!parent) {
+      parent = targetElement.parentElement!
+    }
+    parent.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
   return (
@@ -43,7 +62,7 @@ const PrimitiveSection: React.FC<PrimitiveSectionProps> = ({
       onClick={() => handlePrimitiveClick(field.name)}
     >
       {field.displayLabel && `${getEditLayoutItemLabel(edit, field.name)}: `}
-      {formValues[field.name]}
+      {typeof formValues[field.name] === 'object' ? JSON.stringify(formValues[field.name]) : formValues[field.name]}
     </Typography>
   )
 }
