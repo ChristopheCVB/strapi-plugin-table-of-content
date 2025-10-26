@@ -124,7 +124,9 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
 
     for (const dynamiczoneHeader of dynamiczoneHeaders) {
       // Get the dynamic zone header title
-      const dynamiczoneHeaderTitle = dynamiczoneHeader.querySelector<HTMLSpanElement>('span:first-child')?.textContent.trim() || undefined
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore - @strapi/sdk-plugin uses an old typescript version
+      const dynamiczoneHeaderTitle = dynamiczoneHeader.querySelector<HTMLSpanElement>('span:first-child')?.textContent.trim()
 
       // If the dynamic zone header title matches the field name
       if (getEditLayoutItemLabel(edit, fieldName) === dynamiczoneHeaderTitle) {

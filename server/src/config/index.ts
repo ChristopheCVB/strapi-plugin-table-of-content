@@ -44,7 +44,9 @@ const configSchema = z.object({
         }),
       ]),
     ).refine((fields) => {
-      const fieldNames = fields.filter((field) => field.type !== 'separator').map((field) => field.name)
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore - @strapi/sdk-plugin uses an old typescript version
+      const fieldNames = fields.filter((field) => field.type !== 'separator').map((field) => field.name!)
       return new Set(fieldNames).size === fieldNames.length
     }, {
       message: 'Duplicate field names are not allowed.',

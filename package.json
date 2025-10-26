@@ -104,9 +104,6 @@
     "react-router-dom": "^6.30.1",
     "styled-components": "^6.1.19"
   },
-  "resolutions": {
-    "typescript": "^5.9.3"
-  },
   "engines": {
     "node": ">=22.21.0"
   },
