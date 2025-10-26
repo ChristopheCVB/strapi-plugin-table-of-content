@@ -94,8 +94,11 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
 
     const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
 
-    const iconKey = capitalize(iconName) as keyof typeof Icons
-    return Icons[iconKey]
+    const iconKey = capitalize(iconName)
+    if (['Paint', 'Brush'].includes(iconKey)) {
+      return Icons.PaintBrush
+    }
+    return Icons[iconKey as keyof typeof Icons]
     
   }
 
