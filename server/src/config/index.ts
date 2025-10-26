@@ -44,8 +44,6 @@ const configSchema = z.object({
         }),
       ]),
     ).refine((fields) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       const fieldNames = fields.filter((field) => field.type !== 'separator').map((field) => field.name)
       return new Set(fieldNames).size === fieldNames.length
     }, {

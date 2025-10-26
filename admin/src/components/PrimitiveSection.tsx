@@ -27,6 +27,8 @@ const PrimitiveSection: React.FC<PrimitiveSectionProps> = ({
   }
 
   const handlePrimitiveClick = (fieldName: string) => {
+    // ⚠️ Heavily depends on the Strapi admin UI structure
+    
     // Try to find the target element by name attribute
     let targetElement = document.querySelector<HTMLElement>(`div > label + div [name="${fieldName}"]`)
     // If not found, try to find label + div by name attribute (for select, textarea, etc.)

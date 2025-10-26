@@ -117,18 +117,18 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
   }
 
   const handleComponentClick = (fieldName: string, componentIndex: number) => {
-    // Select all dynamic zone headers (⚠️ uses :has selector)
-    const dynamiczoneHeaders = document.querySelectorAll('div:has(+ span + span + ol)')
+    // ⚠️ Heavily depends on the Strapi admin UI structure
+
+    // Select all dynamic zone headers
+    const dynamiczoneHeaders = document.querySelectorAll<HTMLDivElement>('div:has(+ span + span + ol)')
 
     for (const dynamiczoneHeader of dynamiczoneHeaders) {
       // Get the dynamic zone header title
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      const dynamiczoneHeaderTitle = dynamiczoneHeader.querySelector('span:first-child')?.textContent.trim()
+      const dynamiczoneHeaderTitle = dynamiczoneHeader.querySelector<HTMLSpanElement>('span:first-child')?.textContent.trim() || undefined
 
       // If the dynamic zone header title matches the field name
       if (getEditLayoutItemLabel(edit, fieldName) === dynamiczoneHeaderTitle) {
-        // ⚠️ Full selector: `ol > li:nth-child(${componentIndex + 1}) > div:nth-child(2) > div > div > h3 > button` that we simplify to be hopefully more future-proof
+        // Full selector: `ol > li:nth-child(${componentIndex + 1}) > div:nth-child(2) > div > div > h3 > button` that we simplify to be hopefully more future-proof
         // Get the button element for the component
         const buttonElement = dynamiczoneHeader.parentElement!.querySelector<HTMLButtonElement>(`ol > li:nth-child(${componentIndex + 1}) h3 > button`)
         if (buttonElement) {
