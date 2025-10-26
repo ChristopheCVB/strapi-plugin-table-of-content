@@ -46,6 +46,9 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
     let nextLevel = 0
     for (const component of formValues[field.name] as DZComponent[]) {
       const componentLevel = getComponentConfigLevel(component, field)
+      if (componentLevel === null) {
+        continue
+      }
       if (componentLevel > currentLevel) {
         nextLevel = currentLevel + 1
       } else if (componentLevel < currentLevel && componentLevel !== 0) {
@@ -100,6 +103,10 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
     const componentConfig = field.components.find(comp => comp.name === component.__component)
     if (!componentConfig) {
       return 0
+    }
+    
+    if (componentConfig.level === null) {
+      return null
     }
 
     if (typeof componentConfig.level === 'number') {

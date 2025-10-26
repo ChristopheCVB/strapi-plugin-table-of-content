@@ -31,6 +31,7 @@ const configSchema = z.object({
                 z.object({
                   field: z.string().min(1),
                 }),
+                z.null(),
               ]),
               displayIcon: z.boolean().optional(),
             }),
