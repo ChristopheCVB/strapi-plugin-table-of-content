@@ -60,10 +60,16 @@ const PrimitiveSection: React.FC<PrimitiveSectionProps> = ({
     <Typography
       key={`${PLUGIN_ID}_field_${field.name}`}
       tag="h3"
-      style={{ cursor: 'pointer' }}
+      style={{
+        cursor: 'pointer',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        paddingBlock: 2,
+      }}
       onClick={() => handlePrimitiveClick(field.name)}
     >
-      {field.displayLabel && `${getEditLayoutItemLabel(edit, field.name)}: `}
+      {field.displayLabel && (<b>{`${getEditLayoutItemLabel(edit, field.name)}: `}</b>)}
       {typeof formValues[field.name] === 'object' ? JSON.stringify(formValues[field.name]) : formValues[field.name]}
     </Typography>
   )

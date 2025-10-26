@@ -167,7 +167,8 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
         style={{
           display: 'flex',
           flexDirection: 'column',
-          gap: 2,
+          gap: 4,
+          width: '100%',
         }}
       >
         {componentsWithLevel.map(({ component, level }, componentIndex) => {
@@ -180,6 +181,7 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
                 alignItems: 'center',
                 gap: 4,
                 paddingInlineStart: level * 16,
+                paddingBlock: 2,
                 cursor: 'pointer',
               }}
               onClick={() => handleComponentClick(field.name, componentIndex)}
@@ -188,7 +190,9 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
               <Typography
                 fontWeight="semiBold"
                 style={{
-                  paddingBlock: 2,
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
                 }}
               >
                 {componentToDisplayName(component)}
