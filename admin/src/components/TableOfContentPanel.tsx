@@ -3,7 +3,7 @@ import type { Config } from '../../../server/src/config'
 
 import { useEffect, useState } from 'react'
 import { FetchError, getFetchClient } from '@strapi/strapi/admin'
-import { Typography, Loader, Flex, Button } from '@strapi/design-system'
+import { Typography, Loader, Flex, Button, Divider } from '@strapi/design-system'
 
 import { PLUGIN_ID } from '../pluginId'
 import { DynamicZoneSection } from './DynamicZoneSection'
@@ -40,56 +40,52 @@ const TableOfContentPanel: PanelComponent = (props) => {
 
   return {
     title: 'Table of Content',
-    content: isLoading ? (
+    content: (
       <Flex
-        justifyContent="center"
-        alignItems="center"
         direction="column"
         width="100%"
+        alignItems="stretch"
+        gap={2}
       >
-        <Loader />
+        {isLoading ? (
+          <Loader style={{ alignSelf: 'center' }} />
+        ) : contentType ? (
+          contentType.fields.map((field, fieldIndex) => {
+            switch (field.type) {
+            case 'separator':
+              return (
+                <Divider
+                  key={`${PLUGIN_ID}_separator_${fieldIndex}`}
+                />
+              )
+            case 'primitive':
+              return (
+                <PrimitiveSection
+                  key={`${PLUGIN_ID}_field_${field.name}`}
+                  field={field}
+                  model={props.model}
+                />
+              )
+            case 'dynamiczone':
+              return (
+                <DynamicZoneSection
+                  key={`${PLUGIN_ID}_field_${field.name}`}
+                  field={field}
+                  model={props.model}
+                />
+              )
+            default:
+              return null
+            }
+          })
+        ) : (
+          <>
+            <Typography>Error loading table of content</Typography>
+            <Button onClick={() => setRetry(retry + 1)} variant='tertiary'>Retry</Button>
+          </>
+        )}
       </Flex>
-    ) : contentType ? 
-      contentType.fields.map((field, fieldIndex) => {
-        switch (field.type) {
-        case 'separator':
-          return (
-            <hr
-              key={`${PLUGIN_ID}_separator_${fieldIndex}`}
-              style={{ width: '100%', color: 'rgba(0, 0, 0, 0.5)', backgroundColor: 'rgba(0, 0, 0, 0.5)', borderColor: 'rgba(0, 0, 0, 0.5)' }}
-            />
-          )
-        case 'primitive':
-          return (
-            <PrimitiveSection
-              key={`${PLUGIN_ID}_field_${field.name}`}
-              field={field}
-              model={props.model}
-            />
-          )
-        case 'dynamiczone':
-          return (
-            <DynamicZoneSection
-              key={`${PLUGIN_ID}_field_${field.name}`}
-              field={field}
-              activeTab={props.activeTab}
-              model={props.model}
-            />
-          )
-        default:
-          return null
-        }
-      })
-      : (
-        <Flex
-          direction="column"
-          alignItems="stretch"
-          gap={1}
-        >
-          <Typography>Error loading table of content</Typography>
-          <Button onClick={() => setRetry(retry + 1)} variant='tertiary'>Retry</Button>
-        </Flex>
-      ),
+    ),
   }
 }
 

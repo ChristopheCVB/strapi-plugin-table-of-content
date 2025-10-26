@@ -26,8 +26,22 @@ const PrimitiveSection: React.FC<PrimitiveSectionProps> = ({
     return null
   }
 
+  const handlePrimitiveClick = (fieldName: string) => {
+    const input = document.querySelector<HTMLInputElement>(`div > label + div > input[name="${fieldName}"]`)
+    if (input) {
+      input.focus()
+      // Scroll to the parent that contains the label and the input
+      input.parentElement!.parentElement!.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
+
   return (
-    <Typography key={`${PLUGIN_ID}_field_${field.name}`} tag="h3">
+    <Typography
+      key={`${PLUGIN_ID}_field_${field.name}`}
+      tag="h3"
+      style={{ cursor: 'pointer' }}
+      onClick={() => handlePrimitiveClick(field.name)}
+    >
       {field.displayLabel && `${getEditLayoutItemLabel(edit, field.name)}: `}
       {formValues[field.name]}
     </Typography>

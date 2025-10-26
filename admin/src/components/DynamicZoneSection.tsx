@@ -1,4 +1,4 @@
-import type { EditViewContext, PanelComponentProps } from '@strapi/content-manager/strapi-admin'
+import type { PanelComponentProps } from '@strapi/content-manager/strapi-admin'
 import type { Config } from '../../../server/src/config'
 
 import { useEffect, useState } from 'react'
@@ -19,13 +19,12 @@ interface DZComponentWithLevel {
   level: number
 }
 
-type DynamicZoneSectionProps = Pick<EditViewContext, 'activeTab'> & Pick<PanelComponentProps, 'model'> & {
+type DynamicZoneSectionProps = Pick<PanelComponentProps, 'model'> & {
   field: Config['contentTypes'][number]['fields'][number]
 }
 
 const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
   field,
-  activeTab,
   model,
 }) => {
   const { edit } = useDocumentLayout(model)
@@ -142,7 +141,7 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
       key={`${PLUGIN_ID}_field_${field.name}-container`}
       direction="column"
       gap={1}
-      alignItems="flex-start"
+      alignItems="start"
       width="100%"
     >
       {field.displayLabel && (
@@ -162,28 +161,28 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
           gap: 2,
         }}
       >
-        {componentsWithLevel.map((componentWithLevel, componentWithLevelIndex) => {
-          const Icon = componentToIcon(componentWithLevel.component)
+        {componentsWithLevel.map(({ component, level }, componentIndex) => {
+          const Icon = componentToIcon(component)
           return (
             <li
-              key={`${PLUGIN_ID}_field_${field.name}_component_${componentWithLevel.component.__component}[${componentWithLevel.component.id}]`}
+              key={`${PLUGIN_ID}_field_${field.name}_component_${component.__component}[${component.id}]`}
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: 4,
-                paddingInlineStart: componentWithLevel.level * 16,
-                cursor: activeTab !== 'published' ? 'pointer' : 'unset',
+                paddingInlineStart: level * 16,
+                cursor: 'pointer',
               }}
-              onClick={() => activeTab !== 'published' && handleComponentClick(field.name, componentWithLevelIndex)}
+              onClick={() => handleComponentClick(field.name, componentIndex)}
             >
-              {Icon && <Icon />}
+              {Icon && <Icon style={{ flexShrink: 0 }} />}
               <Typography
                 fontWeight="semiBold"
                 style={{
                   paddingBlock: 2,
                 }}
               >
-                {componentToDisplayName(componentWithLevel.component)}
+                {componentToDisplayName(component)}
               </Typography>
             </li>
           )
