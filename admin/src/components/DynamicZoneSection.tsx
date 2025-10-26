@@ -16,7 +16,7 @@ type DZComponent = {
 
 interface DZComponentWithLevel {
   component: DZComponent
-  level: number
+  level: number | null
 }
 
 type DynamicZoneSectionProps = Pick<PanelComponentProps, 'model'> & {
@@ -46,9 +46,12 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
     let nextLevel = 0
     for (const component of formValues[field.name] as DZComponent[]) {
       const componentLevel = getComponentConfigLevel(component, field)
+
       if (componentLevel === null) {
+        localComponentsWithLevel.push({ component, level: null })
         continue
       }
+
       if (componentLevel > currentLevel) {
         nextLevel = currentLevel + 1
       } else if (componentLevel < currentLevel && componentLevel !== 0) {
@@ -58,6 +61,7 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
         currentLevel = currentLevel - 1
         nextLevel = currentLevel + 1
       }
+      
       localComponentsWithLevel.push({ component, level: currentLevel })
       currentLevel = nextLevel
     }
@@ -134,7 +138,7 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
         // Get the button element for the component
         const buttonElement = dynamiczoneHeader.parentElement!.querySelector<HTMLButtonElement>(`ol > li:nth-child(${componentIndex + 1}) h3 > button`)
         if (buttonElement) {
-          if (buttonElement.getAttribute('data-state') === 'closed') { // If the component is closed, open it
+          if (buttonElement.dataset.state === 'closed') { // If the component is closed, open it
             buttonElement.click()
           }
           buttonElement.scrollIntoView({ behavior: 'smooth', block: 'start' }) // Scroll to the component
@@ -172,6 +176,9 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
         }}
       >
         {componentsWithLevel.map(({ component, level }, componentIndex) => {
+          if (level === null) {
+            return null
+          }
           const Icon = componentToIcon(component)
           return (
             <li
