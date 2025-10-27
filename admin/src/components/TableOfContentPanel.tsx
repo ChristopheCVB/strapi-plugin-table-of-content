@@ -32,7 +32,7 @@ const TableOfContentPanel: PanelComponent = (props) => {
       .finally(() => {
         setIsLoading(false)
       })
-  }, [retry])
+  }, [retry, props.model])
 
   if (!isLoading && contentType === undefined) {
     return null
