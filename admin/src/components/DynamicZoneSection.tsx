@@ -104,6 +104,10 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
       return Icons.PaintBrush
     } else if (['Quote'].includes(iconKey)) {
       return Icons.Quotes
+    } else if (['Picture'].includes(iconKey)) {
+      return Icons.Image
+    } else if (['Apps'].includes(iconKey)) {
+      return Icons.GridNine
     }
     return Icons[iconKey as keyof typeof Icons]
     
