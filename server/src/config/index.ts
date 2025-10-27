@@ -12,6 +12,7 @@ const configSchema = z.object({
           type: z.literal('primitive'),
           name: z.string().min(1),
           displayLabel: z.boolean().optional(),
+          displayIcon: z.boolean().optional(),
         }),
         // TODO: Allow relation fields to be configured
         // z.object({

@@ -97,6 +97,8 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
     const iconKey = capitalize(iconName)
     if (['Paint', 'Brush'].includes(iconKey)) {
       return Icons.PaintBrush
+    } else if (['Quote'].includes(iconKey)) {
+      return Icons.Quotes
     }
     return Icons[iconKey as keyof typeof Icons]
     
