@@ -45,7 +45,7 @@ const TableOfContentPanel: PanelComponent = (props) => {
         direction="column"
         width="100%"
         alignItems="stretch"
-        gap={2}
+        gap={3}
       >
         {isLoading ? (
           <Loader style={{ alignSelf: 'center' }} />

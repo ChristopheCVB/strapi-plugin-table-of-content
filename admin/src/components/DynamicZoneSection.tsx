@@ -81,7 +81,7 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
 
   const componentToIcon = (component: DZComponent) => {
     const componentSettings = edit.components[component.__component].settings
-    const displayIcon = field.components?.find(comp => comp.name === component.__component)?.displayIcon || true
+    const displayIcon = field.components?.find(comp => comp.name === component.__component)?.displayIcon ?? true
 
     if (!displayIcon) {
       return null
