@@ -29,25 +29,28 @@ To configure the **Table of Content** plugin, add your configuration to the plug
 
 ```typescript
 type Config = {
-  contentTypes: Array<{
-    uid: string
-    fields: Array<
-      {
-        type: 'primitive'
-        displayLabel: boolean
-      } | {
-        type: 'dynamiczone'
-        displayLabel: boolean
-        components: Array<{
-          name: string
-          level: number
-          displayIcon: boolean
-        }>
-      } | {
-        type: 'separator'
-      }
-    >
-  }>
+  contentTypes: {
+    uid: string;
+    fields: {
+      type: "separator";
+    } | {
+      type: "primitive";
+      name: string;
+      displayLabel?: boolean;
+      displayIcon?: boolean;
+    } | {
+      type: "dynamiczone";
+      name: string;
+      displayLabel?: boolean;
+      components?: {
+        name: string;
+        level?: null | number | {
+          field: string;
+        };
+        displayIcon?: boolean;
+      }[];
+    }[];
+  }[];
 }
 ```
 
@@ -71,6 +74,7 @@ export default () => ({
               type: 'primitive',
               name: 'title',
               displayLabel: true,
+              displayIcon: true,
             },
             {
               type: 'separator',
@@ -81,7 +85,6 @@ export default () => ({
               displayLabel: true,
               components: [
                 { name: 'content.title', level: { field: 'level' } },
-                { name: 'content.rich-text', level: 0 },
               ],
             },
             {
@@ -90,9 +93,11 @@ export default () => ({
             {
               type: 'dynamiczone',
               name: 'extraContent',
+              displayLabel: true,
               components: [
                 { name: 'content.title', level: { field: 'level' } },
-                { name: 'content.rich-text', level: 0 },
+                { name: 'content.rich-text', level: null }, // null means the component is not displayed
+                { name: 'content.image-text', level: null }, // null means the component is not displayed
               ],
             },
           ],
