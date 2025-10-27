@@ -7,7 +7,7 @@ import { Typography, Flex } from '@strapi/design-system'
 import * as Icons from '@strapi/icons'
 
 import { PLUGIN_ID } from '../pluginId'
-import { getEditLayoutItemLabel } from '../utils'
+import { ComponentIcons, getEditLayoutItemLabel } from '../utils'
 
 type DZComponent = {
   __component: string
@@ -97,20 +97,7 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
       return null
     }
 
-    const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
-
-    const iconKey = capitalize(iconName)
-    if (['Paint', 'Brush'].includes(iconKey)) {
-      return Icons.PaintBrush
-    } else if (['Quote'].includes(iconKey)) {
-      return Icons.Quotes
-    } else if (['Picture'].includes(iconKey)) {
-      return Icons.Image
-    } else if (['Apps'].includes(iconKey)) {
-      return Icons.GridNine
-    }
-    return Icons[iconKey as keyof typeof Icons]
-    
+    return Icons[ComponentIcons[iconName]]
   }
 
   const getComponentConfigLevel = (component: DZComponent, field: Config['contentTypes'][number]['fields'][number]) => {
