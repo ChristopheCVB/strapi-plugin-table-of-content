@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.1](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/compare/v1.0.0...v1.0.1) (2025-10-27)
+
+
+### Bug Fixes
+
+* enhance displayName logic in DynamicZoneSection to ensure valid string values ([6f25acb](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/commit/6f25acb400a260e519a7c0f3fe7552697c764e3b))
+* icon mappings for Picture and Apps in DynamicZoneSection ([63e5803](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/commit/63e5803849ed4eca5c65d0ff0fa7a890c7310adf))
+* update dependency in TableOfContentPanel to include props.model in effect dependencies ([9767643](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/commit/9767643c360fccceb1c947b69ab8634bac558627))
+
 ## 1.0.0 (2025-10-27)
 
 
