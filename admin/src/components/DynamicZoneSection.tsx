@@ -72,7 +72,12 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
     const componentSettings = edit.components[component.__component].settings
     let displayName = componentSettings.displayName
 
-    if (componentSettings.mainField !== 'documentId' && component[componentSettings.mainField]) {
+    if (
+      componentSettings.mainField !== 'documentId' &&
+      component[componentSettings.mainField] &&
+      typeof component[componentSettings.mainField] === 'string' &&
+      (component[componentSettings.mainField] as string).trim()
+    ) {
       displayName = `${displayName} - ${component[componentSettings.mainField]}`
     }
 
