@@ -33,14 +33,13 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { values: formValues } = form as any
 
-  // Early return if field is not a dynamic zone or has no components
-  if (field.type !== 'dynamiczone' || !formValues[field.name] || (formValues[field.name] as DZComponent[]).length === 0) {
-    return null
-  }
-
   const [componentsWithLevel, setComponentsWithLevel] = useState<DZComponentWithLevel[]>([])
 
   useEffect(() => {
+    if (field.type !== 'dynamiczone' || !formValues[field.name] || (formValues[field.name] as DZComponent[]).length === 0) {
+      return
+    }
+
     const localComponentsWithLevel: DZComponentWithLevel[] = []
     let currentLevel = 0
     let nextLevel = 0
@@ -67,6 +66,11 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
     }
     setComponentsWithLevel(localComponentsWithLevel)
   }, [formValues, field])
+
+  // Early return if field is not a dynamic zone or has no components
+  if (field.type !== 'dynamiczone' || !formValues[field.name] || (formValues[field.name] as DZComponent[]).length === 0) {
+    return null
+  }
 
   const componentToDisplayName = (component: DZComponent) => {
     const componentSettings = edit.components[component.__component].settings
