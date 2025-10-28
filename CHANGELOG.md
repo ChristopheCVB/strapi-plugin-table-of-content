@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.2](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/compare/v1.0.1...v1.0.2) (2025-10-28)
+
+
+### Bug Fixes
+
+* DynamicZoneSection useEffect before any return ([3dadf72](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/commit/3dadf72c09d9c8b44575f043ff08790c113bfc29))
+* icon mappings ([6f86f78](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/commit/6f86f78bbe2b3b82922e5f0cca1e6b65e30459ad))
+
 ## [1.0.1](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/compare/v1.0.0...v1.0.1) (2025-10-27)
 
 
