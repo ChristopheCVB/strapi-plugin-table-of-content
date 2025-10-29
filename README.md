@@ -60,8 +60,6 @@ type Config = {
 // config/plugins.ts
 import type { Config as TableOfContentConfig } from 'strapi-plugin-table-of-content/dist/server/src/config'
 
-import packageJson from '../package.json'
-
 export default () => ({
   'table-of-content': {
     enabled: true,
