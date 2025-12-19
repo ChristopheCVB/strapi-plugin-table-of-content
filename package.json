@@ -72,7 +72,7 @@
     "@strapi/content-manager": "^5.31.2",
     "@strapi/design-system": "^2.0.1",
     "@strapi/icons": "^2.0.1",
-    "react-intl": "^7.1.14",
+    "react-intl": "^8.0.6",
     "zod": "^4.1.12"
   },
   "devDependencies": {
