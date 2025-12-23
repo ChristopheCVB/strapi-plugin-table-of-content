@@ -77,7 +77,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
-    "@strapi/sdk-plugin": "^5.3.2",
+    "@strapi/sdk-plugin": "^5.4.0",
     "@strapi/strapi": "^5.31.2",
     "@strapi/typescript-utils": "^5.31.2",
     "@stylistic/eslint-plugin": "^5.6.1",
@@ -97,7 +97,7 @@
     "vitest": "^4.0.16"
   },
   "peerDependencies": {
-    "@strapi/sdk-plugin": "^5.3.2",
+    "@strapi/sdk-plugin": "^5.4.0",
     "@strapi/strapi": "^5.31.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
