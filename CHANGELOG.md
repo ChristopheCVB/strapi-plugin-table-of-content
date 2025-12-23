@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.0.3](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/compare/v1.0.2...v1.0.3) (2025-12-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependencies in pnpm-lock.yaml ([63f03e3](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/commit/63f03e3642e6a47e1ebafdc8e56b9f3084f5743e))
+* **deps:** update dependency @strapi/design-system to ^2.0.1 ([#36](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/issues/36)) ([2343b07](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/commit/2343b0799aa6df00202f3f89daede628a12c5991))
+* **deps:** update dependency @strapi/design-system to ^2.0.2 ([#52](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/issues/52)) ([5148ef0](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/commit/5148ef03d0af22d014c10d19c6dcd1aa6f23f844))
+* **deps:** update dependency @strapi/icons to ^2.0.1 ([#37](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/issues/37)) ([f2ead14](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/commit/f2ead1404fa1731ea93dc741eaded3f10166cbde))
+* **deps:** update dependency @strapi/icons to ^2.0.2 ([#53](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/issues/53)) ([ff8416c](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/commit/ff8416c555bb15760e91bf79f6da70665bd66c08))
+* **deps:** update dependency zod to ^4.2.1 ([#47](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/issues/47)) ([bff449b](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/commit/bff449be1f2bb8ea6fa9abc494081f401173e165))
+* **deps:** update strapi monorepo to ^5.30.1 ([#15](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/issues/15)) ([5939c1b](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/commit/5939c1b391b5e7577b94e1d57e2abb8de95488b6))
+* **deps:** update strapi monorepo to ^5.31.2 ([#41](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/issues/41)) ([0586097](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/commit/058609788f4e2da11450cb939ea0061637c79f8f))
+* **deps:** update strapi monorepo to ^5.33.0 ([#50](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/issues/50)) ([bf5b939](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/commit/bf5b93922a723e7d131c02f45f0bdb23086f8db2))
+
 ## [1.0.2](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/compare/v1.0.1...v1.0.2) (2025-10-28)
 
 
