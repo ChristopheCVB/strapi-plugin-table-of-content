@@ -70,7 +70,7 @@
   },
   "dependencies": {
     "@strapi/content-manager": "^5.33.3",
-    "@strapi/design-system": "^2.1.1",
+    "@strapi/design-system": "^2.1.2",
     "@strapi/icons": "^2.1.2",
     "react-intl": "^7.1.14",
     "zod": "^4.3.5"
