@@ -73,7 +73,7 @@
     "@strapi/design-system": "^2.1.2",
     "@strapi/icons": "^2.1.2",
     "react-intl": "^7.1.14",
-    "zod": "^4.3.5"
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
