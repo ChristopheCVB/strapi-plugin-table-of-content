@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/compare/v1.1.0...v1.1.1) (2026-01-29)
+
+
+### Bug Fixes
+
+* improve target element selection logic in PrimitiveSection component ([9186d90](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/commit/9186d904d7e2b825c9db7ca1f68a8cc332b6f1d5))
+
 ## [1.1.0](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/compare/v1.0.2...v1.1.0) (2026-01-29)
 
 
