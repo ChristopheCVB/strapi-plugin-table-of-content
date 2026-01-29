@@ -77,7 +77,6 @@ const PrimitiveSection: React.FC<PrimitiveSectionProps> = ({
       parent = parent.parentElement
     }
     if (!parent) {
-      console.log('targetElement.parentElement!.parentElement!', targetElement.parentElement!.parentElement!)
       parent = targetElement.parentElement!.parentElement!
     }
     parent.scrollIntoView({ behavior: 'smooth', block: 'start' })
