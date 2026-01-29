@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/compare/v1.1.1...v1.1.2) (2026-01-29)
+
+
+### Bug Fixes
+
+* remove unnecessary console log in PrimitiveSection component ([8b2f518](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/commit/8b2f51892d27f4dcedf05fe491ce55cb33eac594))
+
 ## [1.1.1](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/compare/v1.1.0...v1.1.1) (2026-01-29)
 
 
