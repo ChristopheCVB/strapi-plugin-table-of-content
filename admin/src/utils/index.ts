@@ -1,9 +1,8 @@
 import { unstable_useDocumentLayout as useDocumentLayout } from '@strapi/strapi/admin'
 import * as Icons from '@strapi/icons'
 
-const getEditLayoutItemLabel = (edit: ReturnType<typeof useDocumentLayout>['edit'], fieldName: string) => {
-  // flat(2) is used to flatten the layout array to 2 levels deep (array of rows, each row is an array of items)
-  return edit.layout.flat(2).find((item) => item.name === fieldName)?.label
+const getEditMetadataFieldLabel = (edit: ReturnType<typeof useDocumentLayout>['edit'], fieldName: string) => {
+  return edit.metadatas[fieldName]?.label || fieldName
 }
 
 const ComponentIcons: Record<string, keyof typeof Icons> = {
@@ -134,4 +133,4 @@ const ComponentIcons: Record<string, keyof typeof Icons> = {
   write: 'Feather',
 }
 
-export { getEditLayoutItemLabel, ComponentIcons }
+export { getEditMetadataFieldLabel, ComponentIcons }

@@ -20,26 +20,30 @@ import {
   Paragraph,
 } from '@strapi/icons'
 import { PLUGIN_ID } from '../pluginId'
-import { getEditLayoutItemLabel } from '../utils'
+import { getEditMetadataFieldLabel } from '../utils'
 
-type PrimitiveSectionProps = Pick<PanelComponentProps, 'model'> & {
+type PrimitiveSectionProps = Pick<PanelComponentProps, 'model' | 'document'> & {
   field: Config['contentTypes'][number]['fields'][number]
 }
 
 const PrimitiveSection: React.FC<PrimitiveSectionProps> = ({
   field,
   model,
+  document: currentDocument,
 }) => {
+
   const { edit } = useDocumentLayout(model)
   const { form } = useContentManagerContext()
-  
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { values: formValues } = form as any
-
+  
   // Early return if field is not a primitive or has no value
-  if (field.type !== 'primitive' || !formValues[field.name]) {
+  if (field.type !== 'primitive' || !formValues[field.name] && !currentDocument?.[field.name]) {
     return null
   }
+
+  const currentFieldValue = formValues[field.name] || currentDocument?.[field.name]
 
   const handlePrimitiveClick = (fieldName: string) => {
     // ⚠️ Heavily depends on the Strapi admin UI structure
@@ -76,7 +80,15 @@ const PrimitiveSection: React.FC<PrimitiveSectionProps> = ({
       return null
     }
 
-    const fieldLayout = edit.layout.flat(2).find(item => item.name === field.name)
+    let fieldLayout: { type: string } | undefined = edit.layout.flat(2).find(item => item.name === field.name)
+
+    if (!fieldLayout) {
+      fieldLayout = ['createdAt', 'updatedAt', 'publishedAt'].includes(field.name) ? { type: 'date' } : undefined
+    }
+
+    if (!fieldLayout) {
+      fieldLayout = ['createdBy', 'updatedBy'].includes(field.name) ? { type: 'relation' } : undefined
+    }
 
     if (!fieldLayout) {
       return null
@@ -155,8 +167,8 @@ const PrimitiveSection: React.FC<PrimitiveSectionProps> = ({
       onClick={() => handlePrimitiveClick(field.name)}
     >
       {field.displayIcon && Icon && (<Icon />)}
-      {field.displayLabel && (<b>{`${getEditLayoutItemLabel(edit, field.name)}: `}</b>)}
-      {typeof formValues[field.name] === 'object' ? JSON.stringify(formValues[field.name]) : formValues[field.name]}
+      {field.displayLabel && (<b>{`${getEditMetadataFieldLabel(edit, field.name)}: `}</b>)}
+      {typeof currentFieldValue === 'object' ? JSON.stringify(currentFieldValue) : currentFieldValue}
     </Typography>
   )
 }

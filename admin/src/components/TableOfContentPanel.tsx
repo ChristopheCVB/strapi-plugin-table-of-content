@@ -62,6 +62,7 @@ const TableOfContentPanel: PanelComponent = (props) => {
               return (
                 <PrimitiveSection
                   key={`${PLUGIN_ID}_field_${field.name}`}
+                  document={props.document}
                   field={field}
                   model={props.model}
                 />

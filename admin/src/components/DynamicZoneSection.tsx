@@ -7,7 +7,7 @@ import { Typography, Flex } from '@strapi/design-system'
 import * as Icons from '@strapi/icons'
 
 import { PLUGIN_ID } from '../pluginId'
-import { ComponentIcons, getEditLayoutItemLabel } from '../utils'
+import { ComponentIcons, getEditMetadataFieldLabel } from '../utils'
 
 type DZComponent = {
   __component: string
@@ -138,7 +138,7 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
       const dynamiczoneHeaderTitle = dynamiczoneHeader.querySelector<HTMLSpanElement>('span:first-child')?.textContent.trim()
 
       // If the dynamic zone header title matches the field name
-      if (getEditLayoutItemLabel(edit, fieldName) === dynamiczoneHeaderTitle) {
+      if (getEditMetadataFieldLabel(edit, fieldName) === dynamiczoneHeaderTitle) {
         // Full selector: `ol > li:nth-child(${componentIndex + 1}) > div:nth-child(2) > div > div > h3 > button` that we simplify to be hopefully more future-proof
         // Get the button element for the component
         const buttonElement = dynamiczoneHeader.parentElement!.querySelector<HTMLButtonElement>(`ol > li:nth-child(${componentIndex + 1}) h3 > button`)
@@ -168,7 +168,7 @@ const DynamicZoneSection: React.FC<DynamicZoneSectionProps> = ({
           style={{ textTransform: 'uppercase' }}
           tag="h3"
         >
-          {getEditLayoutItemLabel(edit, field.name)}
+          {getEditMetadataFieldLabel(edit, field.name)}
         </Typography>
       )}
       <ol
