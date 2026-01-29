@@ -49,10 +49,17 @@ const PrimitiveSection: React.FC<PrimitiveSectionProps> = ({
     // ⚠️ Heavily depends on the Strapi admin UI structure
     
     // Try to find the target element by name attribute
-    let targetElement = document.querySelector<HTMLElement>(`div > label + div [name="${fieldName}"]`)
-    // If not found, try to find label + div by name attribute (for select, textarea, etc.)
-    if (!targetElement) {
-      targetElement = document.querySelector<HTMLElement>(`div > label + div[name="${fieldName}"]`)
+    const selectors = [
+      `div > div + div [name="${fieldName}"]`, // input, textarea, etc.
+      `div > div + div[name="${fieldName}"]`, // select, etc.
+    ]
+    let targetElement: HTMLElement | null = null
+    for (const selector of selectors) {
+      const found = document.querySelector<HTMLElement>(selector)
+      if (found) {
+        targetElement = found
+        break
+      }
     }
 
     if (!targetElement) {
@@ -64,13 +71,14 @@ const PrimitiveSection: React.FC<PrimitiveSectionProps> = ({
     // Scroll to the parent that contains the label and the target element
     let parent = targetElement.parentElement
     while (parent) {
-      if (parent.tagName === 'DIV' && parent.querySelector('label + div')) {
+      if (parent.tagName === 'DIV' && parent.querySelector('div + div')) {
         break
       }
       parent = parent.parentElement
     }
     if (!parent) {
-      parent = targetElement.parentElement!
+      console.log('targetElement.parentElement!.parentElement!', targetElement.parentElement!.parentElement!)
+      parent = targetElement.parentElement!.parentElement!
     }
     parent.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
