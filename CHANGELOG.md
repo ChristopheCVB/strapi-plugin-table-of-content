@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.3](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/compare/v1.1.2...v1.1.3) (2026-03-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @strapi/design-system to ^2.2.0 ([#112](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/issues/112)) ([41a3aab](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/commit/41a3aab0200c11af12b76455b61608831d1eee1d))
+* **deps:** update dependency @strapi/icons to ^2.2.0 ([#113](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/issues/113)) ([626a89a](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/commit/626a89a45dc4f7313e56a38dda4a81dcc8e73234))
+* **deps:** update strapi monorepo to ^5.37.1 ([#98](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/issues/98)) ([f627586](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/commit/f6275862f13c3881b8ea7e5bd252e5f46190a671))
+
 ## [1.1.2](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/compare/v1.1.1...v1.1.2) (2026-01-29)
 
 
