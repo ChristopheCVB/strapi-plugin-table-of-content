@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.5](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/compare/v1.1.4...v1.1.5) (2026-03-03)
+
+
+### Bug Fixes
+
+* downgrade @strapi/sdk-plugin peer dependency version ([3a237a6](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/commit/3a237a6fd6486273aab04f70643665afb6689bec))
+
 ## [1.1.4](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/compare/v1.1.3...v1.1.4) (2026-03-02)
 
 
