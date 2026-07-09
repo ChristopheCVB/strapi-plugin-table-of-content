@@ -90,7 +90,7 @@
     "koa": "^2.16.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.30.3",
+    "react-router-dom": "^7.18.1",
     "styled-components": "^6.4.3",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.63.0",
@@ -100,7 +100,7 @@
     "@strapi/strapi": "^5.38.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.30.3",
+    "react-router-dom": "^7.18.1",
     "styled-components": "^6.3.11"
   },
   "engines": {
