@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.6](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/compare/v1.1.5...v1.1.6) (2026-07-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependencies and add mise.toml configuration ([1682eea](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/commit/1682eea48036e1793806c0e47abdb4515a7406d8))
+* **deps:** update strapi monorepo to ^5.38.0 ([#119](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/issues/119)) ([c0db83c](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/commit/c0db83cfcf61bd2cb8ae204c176f192bd4088ca1))
+
 ## [1.1.5](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/compare/v1.1.4...v1.1.5) (2026-03-03)
 
 
