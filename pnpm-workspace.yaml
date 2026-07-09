@@ -1,5 +1,9 @@
-onlyBuiltDependencies:
-  - '@swc/core'
-  - core-js-pure
-  - esbuild
-  - sharp
+allowBuilds:
+  '@swc/core': true
+  core-js-pure: true
+  esbuild: true
+  sharp: true
+minimumReleaseAgeExclude:
+  - '@strapi/design-system@2.2.2'
+  - '@strapi/icons@2.2.2'
+  - '@strapi/ui-primitives@2.2.2'
