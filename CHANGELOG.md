@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.7](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/compare/v1.1.6...v1.1.7) (2026-10-20)
+
+
+### Bug Fixes
+
+* **ci:** use mise and run checks in parallel ([#161](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/issues/161)) ([bfd92e6](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/commit/bfd92e6da90401dc059734dffa00471db0f0bf24))
+* **deps:** bump the npm-minor-patch group across 1 directory with 8 updates ([#160](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/issues/160)) ([2ac43a7](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/commit/2ac43a7f4a62f56a375e9b512d4726598e30fd61))
+* Update dependabot prefixes ([119defe](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/commit/119defe09cacc183f74ca5b6e818f4fa1aa714e1))
+
 ## [1.1.6](https://github.com/ChristopheCVB/strapi-plugin-table-of-content/compare/v1.1.5...v1.1.6) (2026-07-09)
 
 
